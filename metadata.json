@@ -1,0 +1,7 @@
+{
+  "name": "Remix: V3: Mingalar ESL Coach",
+  "description": "A personalized English language coach specifically designed for Burmese adult learners, focusing on speaking, listening, reading, and writing.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
