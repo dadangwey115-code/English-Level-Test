@@ -16,6 +16,7 @@ export interface UserProfile {
   name: string;
   nativeLanguage: 'Burmese';
   customApiKey?: string;
+  openRouterApiKey?: string;
 }
 
 export interface Message {

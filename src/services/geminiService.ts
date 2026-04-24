@@ -6,6 +6,40 @@ function getAI(profile?: UserProfile) {
   return new GoogleGenAI({ apiKey });
 }
 
+async function callOpenRouter(profile: UserProfile, systemInstruction: string, history: Message[], message: string) {
+  const apiKey = profile.openRouterApiKey;
+  if (!apiKey) throw new Error("OpenRouter API Key not found");
+
+  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+      "HTTP-Referer": window.location.origin,
+      "X-Title": "Mingalar ESL Coach",
+    },
+    body: JSON.stringify({
+      model: "google/gemini-2.0-flash-001", // Good default for OpenRouter
+      messages: [
+        { role: "system", content: systemInstruction },
+        ...history.map(m => ({
+          role: m.role === 'user' ? 'user' : 'assistant',
+          content: m.text
+        })),
+        { role: "user", content: message }
+      ],
+    })
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error?.message || "OpenRouter API error");
+  }
+
+  const data = await response.json();
+  return data.choices[0].message.content;
+}
+
 const SYSTEM_INSTRUCTION = (profile: UserProfile) => `
 Role: Expert ESL Teacher & Language Coach specialized in coaching adult learners whose native language is Burmese.
 Learner Profile:
@@ -36,6 +70,16 @@ Always be encouraging, professional, and patient.
 `;
 
 export async function getChatResponse(profile: UserProfile, history: Message[], message: string) {
+  // Use OpenRouter if key is provided
+  if (profile.openRouterApiKey) {
+    try {
+      return await callOpenRouter(profile, SYSTEM_INSTRUCTION(profile), history, message);
+    } catch (err) {
+      console.error("OpenRouter error, falling back to Gemini:", err);
+      // Fallback to Gemini if OpenRouter fails
+    }
+  }
+
   const model = "gemini-3.1-pro-preview";
   const ai = getAI(profile);
   
@@ -59,14 +103,22 @@ export async function getChatResponse(profile: UserProfile, history: Message[], 
 }
 
 export async function getWordMeaning(word: string, profile?: UserProfile) {
-  const model = "gemini-3-flash-preview";
-  const ai = getAI(profile);
-  
   const prompt = `Translate the English word "${word}" into Myanmar (Burmese). 
   Provide a very short definition and the Myanmar translation. 
   Format: [Myanmar Translation] - [Short English Definition]
   Example for "Apple": ပန်းသီး - A round fruit with red or green skin.`;
 
+  if (profile?.openRouterApiKey) {
+    try {
+      return await callOpenRouter(profile, "You are a helpful translation assistant.", [], prompt);
+    } catch (err) {
+      console.error("OpenRouter error for word meaning:", err);
+    }
+  }
+
+  const model = "gemini-3-flash-preview";
+  const ai = getAI(profile);
+  
   const response: GenerateContentResponse = await ai.models.generateContent({
     model,
     contents: [{ role: 'user', parts: [{ text: prompt }] }],
@@ -76,9 +128,6 @@ export async function getWordMeaning(word: string, profile?: UserProfile) {
 }
 
 export async function getWrongAnswerExplanation(question: string, chosenOption: string, options: string[], profile?: UserProfile) {
-  const model = "gemini-3-flash-preview";
-  const ai = getAI(profile);
-  
   const prompt = `Question: ${question}
   Options: ${options.join(", ")}
   The user chose: "${chosenOption}"
@@ -88,6 +137,17 @@ export async function getWrongAnswerExplanation(question: string, chosenOption: 
   Focus only on why the chosen option doesn't fit the context or grammar rules.
   Keep it under 40 words.`;
 
+  if (profile?.openRouterApiKey) {
+    try {
+      return await callOpenRouter(profile, "You are a helpful ESL teacher.", [], prompt);
+    } catch (err) {
+      console.error("OpenRouter error for explanation:", err);
+    }
+  }
+
+  const model = "gemini-3-flash-preview";
+  const ai = getAI(profile);
+  
   const response: GenerateContentResponse = await ai.models.generateContent({
     model,
     contents: [{ role: 'user', parts: [{ text: prompt }] }],

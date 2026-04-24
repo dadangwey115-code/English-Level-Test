@@ -31,7 +31,8 @@ import {
   Share2,
   Link,
   Copy,
-  ExternalLink
+  ExternalLink,
+  Library
 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -54,6 +55,7 @@ export default function App() {
   const [showResetOptions, setShowResetOptions] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
   const [showPurpose, setShowPurpose] = useState(false);
+  const [showResources, setShowResources] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const t = translations[lang];
@@ -268,6 +270,7 @@ Status: Learning from Web App`;
             toggleLang={toggleLang}
             setQuotaExceeded={setQuotaExceeded}
             initialStep={initialEditStep}
+            onShowResources={() => setShowResources(true)}
           />
         ) : (
           <div key="chat" className="max-w-5xl mx-auto h-[100dvh] flex flex-col p-4 md:p-8 overflow-hidden">
@@ -324,6 +327,13 @@ Status: Learning from Web App`;
                   title={t.retakeLevelTest}
                 >
                   <Target size={16} className="md:size-5" />
+                </button>
+                <button 
+                  onClick={() => setShowResources(true)}
+                  className="w-7 h-7 md:w-9 md:h-9 flex items-center justify-center hover:bg-white rounded-full transition-colors text-[#5A5A40]"
+                  title={t.usefulResources}
+                >
+                  <Library size={16} className="md:size-5" />
                 </button>
                 <button 
                   onClick={resetChat}
@@ -586,6 +596,96 @@ Status: Learning from Web App`;
       </AnimatePresence>
 
       <AnimatePresence>
+        {showResources && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+          >
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white rounded-[32px] p-6 md:p-8 max-w-3xl w-full shadow-2xl space-y-6 max-h-[90vh] overflow-hidden flex flex-col"
+            >
+              <div className="flex items-center justify-between sticky top-0 bg-white pb-4 z-10 border-b border-[#5A5A40]/10">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#5A5A40] text-white flex items-center justify-center shadow-lg">
+                    <Library size={20} />
+                  </div>
+                  <div className="min-w-0 text-left">
+                    <h3 className="text-xl md:text-2xl font-bold text-gray-900 truncate tracking-tight">{t.freeCoursesTitle}</h3>
+                    <p className="text-[10px] md:text-xs text-[#5A5A40] opacity-60 uppercase font-sans font-bold tracking-widest">{t.usefulResources}</p>
+                  </div>
+                </div>
+                <button onClick={() => setShowResources(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                  <X size={24} />
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto space-y-6 pr-2 scrollbar-thin">
+                <div className="p-5 md:p-6 bg-[#5A5A40]/5 rounded-[24px] border-l-4 border-[#5A5A40] space-y-2 text-left">
+                  <p className="text-sm md:text-base leading-relaxed opacity-90">{t.resourcesDesc}</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {[
+                    { id: 1, title: 'BBC Learning English', level: 'A1 - C2', desc: t.bbcDesc, link: 'https://www.bbc.co.uk/learningenglish', cert: false, type: t.noCertificate },
+                    { id: 2, title: 'British Council', level: 'A1 - C1', desc: t.britishCouncilDesc, link: 'https://learnenglish.britishcouncil.org', cert: false, type: t.noCertificate },
+                    { id: 3, title: 'Alison', level: 'A1 - C2', desc: t.alisonDesc, link: 'https://alison.com', cert: true, type: t.freeCertificate, badge: 'IELTS' },
+                    { id: 4, title: 'Coursera (Audit)', level: 'A1 - C2', desc: t.courseraDesc, link: 'https://www.coursera.org', cert: false, type: t.auditMode, badge: 'Uni' },
+                    { id: 8, title: 'VOA Learning English', level: 'A1 - B2', desc: t.voaDesc, link: 'https://learningenglish.voanews.com', cert: false, type: t.noCertificate, badge: 'Video' },
+                    { id: 9, title: 'Cambridge English', level: 'A1 - C2', desc: t.cambridgeDesc, link: 'https://www.cambridgeenglish.org/learning-english/free-resources/', cert: false, type: t.noCertificate, badge: 'Exam' },
+                    { id: 5, title: 'FutureLearn', level: 'A1 - C1', desc: t.futureLearnDesc, link: 'https://www.futurelearn.com', cert: false, type: t.auditMode, badge: 'UK' },
+                    { id: 6, title: 'USA Learns', level: 'A1 - B2', desc: t.usaLearnsDesc, link: 'https://www.usalearns.org', cert: false, type: t.noCertificate, badge: 'US' },
+                    { id: 7, title: 'Saylor Academy', level: 'A2 - C1', desc: t.saylorDesc, link: 'https://learn.saylor.org', cert: true, type: t.freeCertificate, badge: 'Acad' }
+                  ].map((res) => (
+                    <motion.div 
+                      key={res.id}
+                      whileHover={{ y: -4 }}
+                      className="p-5 rounded-[24px] bg-white border border-[#5A5A40]/10 hover:border-[#5A5A40] shadow-sm hover:shadow-md transition-all flex flex-col justify-between group text-left"
+                    >
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-sans font-bold bg-[#5A5A40]/10 text-[#5A5A40] px-2 py-0.5 rounded-full uppercase tracking-widest">{res.level}</span>
+                          {res.badge && <span className="text-[10px] font-sans font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full uppercase tracking-widest">{res.badge}</span>}
+                        </div>
+                        <h4 className="font-bold text-lg text-gray-900 group-hover:text-[#5A5A40] transition-colors">{res.title}</h4>
+                        <p className="text-xs text-gray-600 leading-relaxed italic opacity-80 line-clamp-2">"{res.desc}"</p>
+                        <div className="flex items-center gap-2 pt-1">
+                          <span className={`w-2 h-2 rounded-full ${res.cert ? 'bg-green-500' : 'bg-amber-400'}`} />
+                          <span className="text-[10px] font-sans font-bold opacity-60 uppercase tracking-tighter">{res.type}</span>
+                        </div>
+                      </div>
+                      <a 
+                        href={res.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-6 w-full py-2.5 rounded-xl bg-transparent border-2 border-[#5A5A40]/20 text-[#5A5A40] text-center font-sans font-bold text-xs hover:bg-[#5A5A40] hover:text-white transition-all flex items-center justify-center gap-2"
+                      >
+                        {t.visitWebsite} <ExternalLink size={12} />
+                      </a>
+                    </motion.div>
+                  ))}
+                </div>
+
+                <div className="pt-6 pb-2">
+                  <button 
+                    onClick={() => setShowResources(false)}
+                    className="w-full bg-[#5A5A40] text-white py-4 rounded-full font-sans font-bold shadow-lg hover:bg-[#4a4a34] transition-all flex items-center justify-center gap-2"
+                  >
+                    <CheckCircle2 size={20} />
+                    {t.gotIt}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
         {showGuide && (
           <motion.div 
             initial={{ opacity: 0 }}
@@ -703,7 +803,7 @@ Status: Learning from Web App`;
   );
 }
 
-function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggleLang, setQuotaExceeded, initialStep }: { 
+function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggleLang, setQuotaExceeded, initialStep, onShowResources }: { 
   onSubmit: (profile: UserProfile) => void, 
   initialData?: UserProfile,
   onCancel?: () => void,
@@ -711,6 +811,7 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
   lang: Language,
   toggleLang: () => void,
   setQuotaExceeded: (val: boolean) => void,
+  onShowResources: () => void,
   key?: string,
   initialStep?: number
 }) {
@@ -1635,6 +1736,13 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                       <HelpCircle size={18} />
                       {t.userGuide}
                     </button>
+                    <button 
+                      onClick={onShowResources} 
+                      className="flex items-center gap-2 text-[#5A5A40] opacity-90 hover:opacity-100 transition-opacity font-sans text-sm font-bold"
+                    >
+                      <Library size={18} />
+                      {t.usefulResources}
+                    </button>
                     {onCancel && <button onClick={onCancel} className="text-[#5A5A40] opacity-90 hover:opacity-100 transition-opacity font-sans text-sm">{t.cancel}</button>}
                   </div>
                   <button 
@@ -1912,6 +2020,20 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                       placeholder={t.customApiKeyPlaceholder}
                       value={formData.customApiKey || ''}
                       onChange={(e) => setFormData({ ...formData, customApiKey: e.target.value })}
+                      className="flex-1 bg-transparent border-b-2 border-[#5A5A40]/20 focus:border-[#5A5A40] outline-none py-2 font-sans"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <label className="block text-sm font-sans uppercase tracking-widest opacity-60 font-bold">{t.openRouterApiKeyLabel}</label>
+                  <div className="flex items-center gap-4">
+                    <Settings className="text-[#5A5A40]" />
+                    <input 
+                      type="password"
+                      placeholder={t.openRouterApiKeyPlaceholder}
+                      value={formData.openRouterApiKey || ''}
+                      onChange={(e) => setFormData({ ...formData, openRouterApiKey: e.target.value })}
                       className="flex-1 bg-transparent border-b-2 border-[#5A5A40]/20 focus:border-[#5A5A40] outline-none py-2 font-sans"
                     />
                   </div>

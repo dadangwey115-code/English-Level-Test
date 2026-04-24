@@ -35,7 +35,9 @@ db.exec(`
     goals TEXT,
     priority_skills TEXT,
     daily_commitment INTEGER,
-    preferred_dialect TEXT
+    preferred_dialect TEXT,
+    custom_api_key TEXT,
+    openrouter_api_key TEXT
   );
 
   CREATE TABLE IF NOT EXISTS chat_history (
@@ -69,6 +71,8 @@ async function startServer() {
         ...profile,
         goals: JSON.parse(profile.goals as string),
         prioritySkills: JSON.parse(profile.priority_skills as string),
+        customApiKey: profile.custom_api_key,
+        openRouterApiKey: profile.openrouter_api_key,
       });
     } else {
       res.status(404).json({ error: "Profile not found" });
@@ -76,12 +80,12 @@ async function startServer() {
   });
 
   app.post("/api/profile", (req, res) => {
-    const { name, level, goals, prioritySkills, dailyCommitment, preferredDialect } = req.body;
+    const { name, level, goals, prioritySkills, dailyCommitment, preferredDialect, customApiKey, openRouterApiKey } = req.body;
     db.prepare("DELETE FROM user_profile").run(); // Only one profile for now
     const info = db.prepare(`
-      INSERT INTO user_profile (name, level, goals, priority_skills, daily_commitment, preferred_dialect)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `).run(name, level, JSON.stringify(goals), JSON.stringify(prioritySkills), dailyCommitment, preferredDialect);
+      INSERT INTO user_profile (name, level, goals, priority_skills, daily_commitment, preferred_dialect, custom_api_key, openrouter_api_key)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(name, level, JSON.stringify(goals), JSON.stringify(prioritySkills), dailyCommitment, preferredDialect, customApiKey, openRouterApiKey);
     res.json({ id: info.lastInsertRowid });
   });
 
