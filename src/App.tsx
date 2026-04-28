@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   BookOpen, 
@@ -33,7 +33,8 @@ import {
   Copy,
   ExternalLink,
   Library,
-  Book
+  Book,
+  ShieldCheck
 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -41,6 +42,15 @@ import { UserProfile, Message, EnglishLevel, Goal, Skill, Dialect } from './type
 import { getChatResponse, getWordMeaning, getWrongAnswerExplanation } from './services/geminiService';
 import { Language, translations } from './translations';
 import { quizQuestions, calculateLevel, QuizQuestion } from './quizData';
+
+// New Components
+import Header from './components/Header';
+import Loader from './components/Loader';
+
+// Lazy Components
+const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
+const QuizSection = lazy(() => import('./components/QuizSection'));
+const ResultSection = lazy(() => import('./components/ResultSection'));
 
 export default function App() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -57,6 +67,7 @@ export default function App() {
   const [showPurpose, setShowPurpose] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
   const [showResources, setShowResources] = useState(false);
+  const [showAdmin, setShowAdmin] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const t = translations[lang];
@@ -272,88 +283,22 @@ Status: Learning from Web App`;
             setQuotaExceeded={setQuotaExceeded}
             initialStep={initialEditStep}
             onShowResources={() => setShowResources(true)}
+            onShowAdmin={() => setShowAdmin(true)}
           />
         ) : (
           <div key="chat" className="max-w-5xl mx-auto h-[100dvh] flex flex-col p-4 md:p-8 overflow-hidden">
-            {/* Header */}
-            <header className="flex-none flex items-center justify-between mb-4 md:mb-6 border-b border-[#5A5A40]/20 pb-4">
-              <div className="flex items-center gap-2 md:gap-4 min-w-0">
-                <button 
-                  onClick={() => setIsEditing(true)}
-                  className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#5A5A40] flex items-center justify-center text-white shadow-lg flex-none hover:scale-105 active:scale-95 transition-transform group relative"
-                  title={t.profileSettings}
-                >
-                  <User size={20} className="md:size-6" />
-                  <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-white rounded-full flex items-center justify-center shadow-sm border border-[#5A5A40]/20">
-                    <Settings size={10} className="text-[#5A5A40]" />
-                  </div>
-                </button>
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2">
-                    <a 
-                      href="https://gemini.google.com/gem/1Rj6lnR1zxTVTo5lD3faANn3F6zinnvqL?usp=sharing"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-6 h-6 md:w-8 md:h-8 bg-[#5A5A40] rounded-lg flex items-center justify-center text-white shadow-sm flex-none hover:scale-110 transition-transform"
-                      title="Open Gemini Gem"
-                    >
-                      <Bot size={16} className="md:size-5" />
-                    </a>
-                    <h1 className="text-lg md:text-2xl font-bold tracking-tight truncate leading-tight">{t.appName}</h1>
-                  </div>
-                  <p className="text-[9px] md:text-sm text-[#5A5A40] font-sans uppercase tracking-widest font-semibold opacity-70 truncate">
-                    {lang === 'en' ? (
-                      <>{t.personalizedFor} {profile.name}</>
-                    ) : (
-                      <>{profile.name}{t.personalizedFor}</>
-                    )} • {profile.level}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-0.5 md:gap-2 flex-none">
-                <button 
-                  onClick={toggleLang}
-                  className="h-7 md:h-9 px-1.5 md:px-3 bg-[#5A5A40]/10 hover:bg-[#5A5A40]/20 rounded-full transition-colors text-[#5A5A40] font-sans font-bold text-[9px] md:text-xs flex items-center gap-1"
-                  title="Change Language"
-                >
-                  <Languages size={10} className="md:size-[14px]" />
-                  {lang === 'en' ? 'MY' : 'EN'}
-                </button>
-                <button 
-                  onClick={() => {
-                    setInitialEditStep(2);
-                    setIsEditing(true);
-                  }}
-                  className="w-7 h-7 md:w-9 md:h-9 flex items-center justify-center hover:bg-white rounded-full transition-colors text-[#5A5A40]"
-                  title={t.retakeLevelTest}
-                >
-                  <Target size={16} className="md:size-5" />
-                </button>
-                <button 
-                  onClick={() => setShowResources(true)}
-                  className="w-7 h-7 md:w-9 md:h-9 flex items-center justify-center hover:bg-white rounded-full transition-colors text-[#5A5A40]"
-                  title={t.usefulResources}
-                >
-                  <Library size={16} className="md:size-5" />
-                </button>
-                <a 
-                  href="https://drive.google.com/drive/folders/1wlaU3O82loDnk9biiifUQxCtAJlhwZBQ?usp=sharing"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-7 h-7 md:w-9 md:h-9 flex items-center justify-center hover:bg-white rounded-full transition-colors text-[#5A5A40]"
-                  title={t.learningEbooks}
-                >
-                  <Book size={16} className="md:size-5" />
-                </a>
-                <button 
-                  onClick={resetChat}
-                  className="w-7 h-7 md:w-9 md:h-9 flex items-center justify-center hover:bg-white rounded-full transition-colors text-[#5A5A40]"
-                  title={t.resetChat}
-                >
-                  <RefreshCw size={16} className="md:size-5" />
-                </button>
-              </div>
-            </header>
+            <Header 
+              t={t}
+              profile={profile}
+              lang={lang}
+              toggleLang={toggleLang}
+              setIsEditing={setIsEditing}
+              setInitialEditStep={setInitialEditStep}
+              onShowResources={() => setShowResources(true)}
+              onResetChat={resetChat}
+            />
+
+            {/* Chat Area */}
 
             {/* Chat Area */}
             <div 
@@ -459,6 +404,7 @@ Status: Learning from Web App`;
                 <button 
                   type="button"
                   className="p-2 md:p-3 text-[#5A5A40] hover:bg-[#f5f5f0] rounded-full transition-colors"
+                  aria-label="Voice input"
                 >
                   <Mic size={18} className="md:size-5" />
                 </button>
@@ -467,12 +413,14 @@ Status: Learning from Web App`;
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder={t.typeMessage}
+                  aria-label={t.typeMessage}
                   className="flex-1 bg-transparent border-none focus:ring-0 px-2 md:px-4 font-sans text-base md:text-lg outline-none min-w-0"
                 />
                 <button 
                   type="submit"
                   disabled={!input.trim() || isTyping}
                   className="bg-[#5A5A40] text-white p-2 md:p-3 rounded-full hover:bg-[#4a4a34] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md flex-none"
+                  aria-label="Send message"
                 >
                   <Send size={18} className="md:size-5" />
                 </button>
@@ -499,7 +447,7 @@ Status: Learning from Web App`;
             >
               <div className="flex items-center justify-between">
                 <h3 className="text-2xl font-bold text-gray-900">{t.resetOptionsTitle}</h3>
-                <button onClick={() => setShowResetOptions(false)} className="text-gray-400 hover:text-gray-600">
+                <button onClick={() => setShowResetOptions(false)} className="text-gray-400 hover:text-gray-600" aria-label="Close">
                   <X size={24} />
                 </button>
               </div>
@@ -626,7 +574,7 @@ Status: Learning from Web App`;
                   </div>
                   <h3 className="text-2xl font-bold text-gray-900">{t.aboutWebsite}</h3>
                 </div>
-                <button onClick={() => setShowAbout(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                <button onClick={() => setShowAbout(false)} className="text-gray-400 hover:text-gray-600 transition-colors" aria-label="Close">
                   <X size={24} />
                 </button>
               </div>
@@ -693,7 +641,7 @@ Status: Learning from Web App`;
                     <p className="text-[10px] md:text-xs text-[#5A5A40] opacity-60 uppercase font-sans font-bold tracking-widest">{t.usefulResources}</p>
                   </div>
                 </div>
-                <button onClick={() => setShowResources(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                <button onClick={() => setShowResources(false)} className="text-gray-400 hover:text-gray-600 transition-colors" aria-label="Close">
                   <X size={24} />
                 </button>
               </div>
@@ -758,11 +706,68 @@ Status: Learning from Web App`;
           </motion.div>
         )}
       </AnimatePresence>
+
+      <AnimatePresence>
+        {showAdmin && (
+          <Suspense fallback={<div className="fixed inset-0 z-[100] bg-white flex items-center justify-center"><Loader /></div>}>
+            <AdminDashboard 
+              onClose={() => setShowAdmin(false)} 
+              lang={lang} 
+              translations={t} 
+            />
+          </Suspense>
+        )}
+      </AnimatePresence>
+
+      {/* Global Floating AI Assistant Icon */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 1, duration: 0.5 }}
+        className="fixed bottom-6 right-6 z-[100] no-print"
+      >
+        <a 
+          href="https://gemini.google.com/gem/1Rj6lnR1zxTVTo5lD3faANn3F6zinnvqL?usp=sharing"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block"
+        >
+          <motion.div
+            animate={{ 
+              y: [0, -10, 0],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="relative group cursor-pointer"
+          >
+            {/* Glow Effect */}
+            <div className="absolute inset-0 bg-[#5A5A40]/20 blur-2xl rounded-full scale-150 animate-pulse" />
+            
+            {/* Button Container */}
+            <div className="w-14 h-14 md:w-16 md:h-16 bg-[#5A5A40] rounded-full shadow-[0_10px_30px_rgba(90,90,64,0.3)] flex items-center justify-center border-4 border-white relative overflow-hidden group-hover:scale-110 transition-transform duration-300">
+              <Bot size={28} className="text-white drop-shadow-md" />
+              
+              {/* Small Sparkle */}
+              <div className="absolute top-2 right-2">
+                <div className="w-1.5 h-1.5 bg-white rounded-full animate-ping opacity-60" />
+              </div>
+            </div>
+
+            {/* Tooltip/Label */}
+            <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 bg-white text-[#5A5A40] text-xs font-bold px-3 py-1.5 rounded-xl shadow-xl border border-[#5A5A40]/10 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              AI Learning Assistant
+            </div>
+          </motion.div>
+        </a>
+      </motion.div>
     </div>
   );
 }
 
-function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggleLang, setQuotaExceeded, initialStep, onShowResources }: { 
+function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggleLang, setQuotaExceeded, initialStep, onShowResources, onShowAdmin }: { 
   onSubmit: (profile: UserProfile) => void, 
   initialData?: UserProfile,
   onCancel?: () => void,
@@ -771,6 +776,7 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
   toggleLang: () => void,
   setQuotaExceeded: (val: boolean) => void,
   onShowResources: () => void,
+  onShowAdmin: () => void,
   key?: string,
   initialStep?: number
 }) {
@@ -1368,297 +1374,34 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
             )}
 
             {showQuiz ? (
-              <motion.div
-                key="quiz"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="space-y-6"
-              >
+              <Suspense fallback={<Loader />}>
                 {!quizFinished ? (
-                  <>
-                    {quizStarted && (
-                      <>
-                        <div className="space-y-4 mb-6">
-                          <div className="flex items-center justify-between gap-4">
-                            <div className="min-w-0">
-                              <h2 className="text-xl md:text-2xl font-bold truncate">{t.quizTitle}</h2>
-                              <div className="flex items-center gap-2 mt-1">
-                                <span className="text-[9px] md:text-[10px] font-sans font-bold uppercase tracking-widest text-[#5A5A40] opacity-60">
-                                  {t[activeQuestions[quizStep].skill.toLowerCase() as keyof typeof t]}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="flex-none text-right flex items-center gap-3">
-                              <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full font-sans font-bold text-xs transition-colors ${
-                                timeLeft <= 5 ? 'bg-red-100 text-red-600 animate-pulse' : 'bg-amber-100 text-amber-700'
-                              }`}>
-                                <Timer size={14} />
-                                {timeLeft}s
-                              </div>
-                              <span className="text-[10px] md:text-sm font-sans font-bold text-[#5A5A40] bg-[#5A5A40]/10 px-2 md:px-3 py-1 md:py-1.5 rounded-full whitespace-nowrap">
-                                {t.question} {quizStep + 1} / {activeQuestions.length}
-                              </span>
-                            </div>
-                          </div>
-                          
-                          {/* Visual Progress Bar */}
-                          <div className="h-1.5 w-full bg-[#5A5A40]/10 rounded-full overflow-hidden">
-                            <motion.div 
-                              initial={{ width: 0 }}
-                              animate={{ width: `${((quizStep + 1) / activeQuestions.length) * 100}%` }}
-                              className="h-full bg-[#5A5A40] rounded-full"
-                            />
-                          </div>
-                        </div>
-                        <div className="p-4 md:p-8 bg-[#5A5A40]/5 rounded-3xl border border-[#5A5A40]/10 relative">
-                          <p 
-                            className="text-lg md:text-xl font-medium mb-6 md:mb-8 select-text cursor-help"
-                            onMouseUp={handleTextSelection}
-                            onKeyUp={handleTextSelection}
-                            onTouchEnd={handleTextSelection}
-                          >
-                            {activeQuestions[quizStep].question}
-                          </p>
-                          
-                          <AnimatePresence>
-                            {tooltipPos && (
-                              <motion.div
-                                initial={{ opacity: 0, y: 10, scale: 0.9 }}
-                                animate={{ opacity: 1, y: 0, scale: 1 }}
-                                exit={{ opacity: 0, y: 10, scale: 0.9 }}
-                                style={{ 
-                                  position: 'fixed',
-                                  left: tooltipPos.x,
-                                  top: tooltipPos.y - 10,
-                                  transform: 'translate(-50%, -100%)',
-                                  zIndex: 100
-                                }}
-                                className="bg-[#5A5A40] text-white p-3 rounded-xl shadow-2xl max-w-[250px] text-sm pointer-events-auto"
-                              >
-                                <div className="flex flex-col gap-1">
-                                  {isTranslating ? (
-                                    <div className="flex items-center gap-2">
-                                      <Loader2 size={14} className="animate-spin" />
-                                      <span>Translating...</span>
-                                    </div>
-                                  ) : (
-                                    <>
-                                      <p className="font-sans leading-relaxed">{selectedWordMeaning}</p>
-                                      <button 
-                                        onClick={() => { setTooltipPos(null); setSelectedWordMeaning(null); }}
-                                        className="text-[10px] uppercase tracking-widest opacity-60 hover:opacity-100 text-right mt-1"
-                                      >
-                                        Close
-                                      </button>
-                                    </>
-                                  )}
-                                </div>
-                                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-full w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-[#5A5A40]" />
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-
-                          <div className="grid grid-cols-1 gap-3">
-                            {activeQuestions[quizStep].options.map((option, idx) => (
-                              <button
-                                key={idx}
-                                disabled={wrongAnswersForCurrentQuestion.includes(idx) || quizFeedback.loading}
-                                onClick={() => handleQuizAnswer(idx)}
-                                className={`w-full text-left p-4 rounded-2xl border-2 transition-all font-sans ${
-                                  wrongAnswersForCurrentQuestion.includes(idx)
-                                    ? 'border-red-200 bg-red-50 text-red-400 cursor-not-allowed opacity-60'
-                                    : 'border-[#5A5A40]/10 hover:border-[#5A5A40] hover:bg-white'
-                                }`}
-                              >
-                                {option}
-                              </button>
-                            ))}
-                          </div>
-
-                          <AnimatePresence>
-                            {quizFeedback.isWrong && (
-                              <motion.div
-                                initial={{ opacity: 0, height: 0 }}
-                                animate={{ opacity: 1, height: 'auto' }}
-                                exit={{ opacity: 0, height: 0 }}
-                                className="mt-6 p-4 bg-red-50 border border-red-100 rounded-2xl flex gap-3 items-start"
-                              >
-                                <AlertCircle className="text-red-500 flex-none mt-0.5" size={20} />
-                                <div>
-                                  <p className="text-red-800 font-bold text-sm mb-1">Not quite right!</p>
-                                  {quizFeedback.loading ? (
-                                    <div className="flex items-center gap-2 text-red-600 text-sm italic">
-                                      <Loader2 size={14} className="animate-spin" />
-                                      Thinking...
-                                    </div>
-                                  ) : (
-                                    <p className="text-red-700 text-sm leading-relaxed">{quizFeedback.explanation}</p>
-                                  )}
-                                </div>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </div>
-                      </>
-                    )}
-                    <div className="flex flex-col items-center gap-4 mt-6">
-                      <button 
-                        onClick={() => setShowExitConfirm(true)}
-                        className="text-red-500 opacity-60 hover:opacity-100 transition-opacity font-sans text-sm font-bold flex items-center gap-2"
-                      >
-                        <X size={16} />
-                        {t.exitTest}
-                      </button>
-                    </div>
-
-                    <AnimatePresence>
-                      {showExitConfirm && (
-                        <motion.div 
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
-                        >
-                          <motion.div 
-                            initial={{ scale: 0.95, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.95, opacity: 0 }}
-                            className="bg-white rounded-[32px] p-8 max-w-sm w-full shadow-2xl space-y-6 text-center"
-                          >
-                            <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto">
-                              <AlertCircle size={32} />
-                            </div>
-                            <div className="space-y-2">
-                              <h3 className="text-xl font-bold">{t.exitTest}?</h3>
-                              <p className="text-sm text-gray-600 leading-relaxed">
-                                {t.exitTestConfirm}
-                              </p>
-                            </div>
-                            <div className="flex flex-col gap-3">
-                              <button 
-                                onClick={() => {
-                                  setShowExitConfirm(false);
-                                  setShowQuiz(false);
-                                  setShowManualLevel(true);
-                                }}
-                                className="w-full bg-red-500 text-white py-3 rounded-full font-sans font-bold shadow-lg hover:bg-red-600 transition-all"
-                              >
-                                {t.chooseManually}
-                              </button>
-                              <button 
-                                onClick={() => setShowExitConfirm(false)}
-                                className="w-full bg-gray-100 text-gray-600 py-3 rounded-full font-sans font-bold hover:bg-gray-200 transition-all"
-                              >
-                                {t.continue}
-                              </button>
-                            </div>
-                          </motion.div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </>
+                  <QuizSection 
+                    t={t}
+                    quizStep={quizStep}
+                    activeQuestions={activeQuestions}
+                    timeLeft={timeLeft}
+                    wrongAnswersForCurrentQuestion={wrongAnswersForCurrentQuestion}
+                    quizFeedback={quizFeedback}
+                    isTranslating={isTranslating}
+                    selectedWordMeaning={selectedWordMeaning}
+                    tooltipPos={tooltipPos}
+                    onAnswer={handleQuizAnswer}
+                    onTextSelection={handleTextSelection}
+                    onExit={() => setShowExitConfirm(true)}
+                    onCloseTooltip={() => { setTooltipPos(null); setSelectedWordMeaning(null); }}
+                  />
                 ) : (
-                  <div className="space-y-8 py-4">
-                    {!showReview ? (
-                      <div className="text-center space-y-8 py-8">
-                        <div className="w-20 h-20 bg-[#5A5A40] rounded-full flex items-center justify-center text-white mx-auto shadow-xl">
-                          <CheckCircle2 size={40} />
-                        </div>
-                        <div className="space-y-4">
-                          <h2 className="text-3xl font-bold mb-2">{t.quizTitle} {t.continue}</h2>
-                          <div className="inline-flex items-center gap-3 px-6 py-2 bg-[#5A5A40] text-white rounded-full shadow-md">
-                            <span className="text-sm font-sans uppercase tracking-widest opacity-80">{t.score}</span>
-                            <span className="font-bold text-2xl">{quizScore} / {activeQuestions.length}</span>
-                          </div>
-                        </div>
-                        <div className="p-8 bg-white rounded-[40px] border-2 border-[#5A5A40]/10 shadow-xl inline-block min-w-[240px]">
-                          <p className="text-sm font-sans uppercase tracking-widest opacity-60 mb-2">{t.suggestedLevel}</p>
-                          <p className="text-6xl font-bold text-[#5A5A40] tracking-tighter">{calculateLevel(quizScore, activeQuestions.length)}</p>
-                        </div>
-
-                        <div className="max-w-md mx-auto p-6 bg-[#5A5A40]/5 rounded-3xl border border-dashed border-[#5A5A40]/20">
-                          <p className="text-[#5A5A40] italic text-sm leading-relaxed">
-                            {quizScore === activeQuestions.length 
-                              ? "Perfect! You've mastered this set. Why not challenge yourself with 50 or 100 questions to truly test your limits?" 
-                              : `Good start! You got ${activeQuestions.length - quizScore} questions wrong on the first try. Try a longer test (20 or 30 questions) to practice more and improve your score!`}
-                          </p>
-                        </div>
-
-                        <div className="flex flex-col gap-4 max-w-xs mx-auto">
-                          <button 
-                            onClick={applyQuizResult}
-                            className="w-full bg-[#5A5A40] text-white py-4 rounded-full font-sans font-bold shadow-lg hover:bg-[#4a4a34] transition-all"
-                          >
-                            {t.useThisLevel}
-                          </button>
-                          <button 
-                            onClick={() => setShowCertificateModal(true)}
-                            className="w-full bg-white border-2 border-[#5A5A40] text-[#5A5A40] py-4 rounded-full font-sans font-bold shadow-lg hover:bg-[#5A5A40]/5 transition-all flex items-center justify-center gap-2"
-                          >
-                            <Download size={20} />
-                            {t.viewPrintCertificate}
-                          </button>
-                          <button 
-                            onClick={() => setShowReview(true)}
-                            className="w-full border border-[#5A5A40]/20 text-[#5A5A40] py-4 rounded-full font-sans font-bold hover:bg-[#5A5A40]/5 transition-all"
-                          >
-                            {t.reviewAnswers}
-                          </button>
-                          <button 
-                            onClick={() => { restartQuiz(); setShowQuiz(false); }}
-                            className="w-full text-[#5A5A40] opacity-60 hover:opacity-100 transition-opacity font-sans text-sm"
-                          >
-                            {t.retakeQuiz}
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="space-y-6">
-                        <div className="flex items-center justify-between">
-                          <h2 className="text-2xl font-bold">{t.reviewAnswers}</h2>
-                          <button 
-                            onClick={() => setShowReview(false)}
-                            className="text-[#5A5A40] font-sans font-bold text-sm"
-                          >
-                            {t.back}
-                          </button>
-                        </div>
-                        <div className="space-y-8 max-h-[60vh] overflow-y-auto pr-2 scrollbar-hide">
-                          {activeQuestions.map((q, i) => (
-                            <div key={i} className="p-6 bg-[#5A5A40]/5 rounded-3xl border border-[#5A5A40]/10 space-y-4">
-                              <div className="flex items-start justify-between gap-4">
-                                <p className="font-bold text-lg">{i + 1}. {q.question}</p>
-                                <span className={`flex-none px-3 py-1 rounded-full text-xs font-bold ${
-                                  userAnswers[i] === q.correctIndex ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-                                }`}>
-                                  {userAnswers[i] === q.correctIndex ? 'Correct' : 'Incorrect'}
-                                </span>
-                              </div>
-                              <div className="grid grid-cols-1 gap-2 text-sm">
-                                <p className="opacity-70">{t.yourAnswer}: <span className="font-bold">{q.options[userAnswers[i]]}</span></p>
-                                {userAnswers[i] !== q.correctIndex && (
-                                  <p className="text-green-700">{t.correctAnswer}: <span className="font-bold">{q.options[q.correctIndex]}</span></p>
-                                )}
-                              </div>
-                              <div className="pt-4 border-t border-[#5A5A40]/10">
-                                <p className="text-xs font-bold uppercase tracking-widest opacity-60 mb-1">{t.explanation}</p>
-                                <p className="text-sm italic opacity-80">{q.explanation}</p>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                        <button 
-                          onClick={applyQuizResult}
-                          className="w-full bg-[#5A5A40] text-white py-4 rounded-full font-sans font-bold shadow-lg hover:bg-[#4a4a34] transition-all"
-                        >
-                          {t.useThisLevel}
-                        </button>
-                      </div>
-                    )}
-                  </div>
+                  <ResultSection 
+                    t={t}
+                    quizScore={quizScore}
+                    totalQuestions={activeQuestions.length}
+                    onApplyResult={applyQuizResult}
+                    onRestart={() => { restartQuiz(); setShowQuiz(false); }}
+                    onShowReview={() => setShowReview(true)}
+                  />
                 )}
-              </motion.div>
+              </Suspense>
             ) : (
               <>
                 {step === 1 && (
@@ -1674,6 +1417,7 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                 <input 
                   type="text"
                   placeholder={t.yourName}
+                  aria-label={t.yourName}
                   className="w-full text-2xl border-b-2 border-[#5A5A40]/20 focus:border-[#5A5A40] outline-none py-4 transition-colors bg-transparent"
                   value={formData.name || ''}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -1681,6 +1425,13 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                 />
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8">
                   <div className="flex flex-wrap gap-4 order-2 sm:order-1">
+                    <button 
+                      onClick={onShowAdmin}
+                      className="flex items-center gap-2 bg-[#5A5A40]/10 text-[#5A5A40] px-4 py-2 rounded-full transition-all hover:bg-[#5A5A40]/20 font-sans font-bold text-xs"
+                    >
+                      <ShieldCheck size={14} />
+                      Admin
+                    </button>
                     <button 
                       onClick={() => (window as any).showGlobalPurpose?.()} 
                       className="flex items-center gap-2 bg-[#5A5A40] text-white px-4 py-2 rounded-full transition-all hover:bg-[#4a4a34] shadow-md font-sans font-bold text-xs"
@@ -1710,6 +1461,16 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                     >
                       <Book size={18} />
                       {t.learningEbooks}
+                    </a>
+                    <a 
+                      href="https://komoe.mindset-it.online/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-[#5A5A40] opacity-90 hover:opacity-100 transition-opacity font-sans text-sm font-bold"
+                      title="Created by Ko Moe"
+                    >
+                      <Link size={18} />
+                      Ko Moe
                     </a>
                     {onCancel && <button onClick={onCancel} className="text-[#5A5A40] opacity-90 hover:opacity-100 transition-opacity font-sans text-sm">{t.cancel}</button>}
                   </div>
@@ -1955,6 +1716,7 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                       value={formData.dailyCommitment}
                       onChange={(e) => setFormData({ ...formData, dailyCommitment: parseInt(e.target.value) })}
                       className="flex-1 accent-[#5A5A40]"
+                      aria-label="Daily commitment level"
                     />
                     <span className="font-bold w-20 text-right">{formData.dailyCommitment} min</span>
                   </div>
@@ -1989,6 +1751,7 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                       value={formData.customApiKey || ''}
                       onChange={(e) => setFormData({ ...formData, customApiKey: e.target.value })}
                       className="flex-1 bg-transparent border-b-2 border-[#5A5A40]/20 focus:border-[#5A5A40] outline-none py-2 font-sans"
+                      aria-label={t.customApiKeyLabel}
                     />
                   </div>
                 </div>
@@ -2003,6 +1766,7 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                       value={formData.openRouterApiKey || ''}
                       onChange={(e) => setFormData({ ...formData, openRouterApiKey: e.target.value })}
                       className="flex-1 bg-transparent border-b-2 border-[#5A5A40]/20 focus:border-[#5A5A40] outline-none py-2 font-sans"
+                      aria-label={t.openRouterApiKeyLabel}
                     />
                   </div>
                 </div>
@@ -2275,52 +2039,7 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
           )}
         </AnimatePresence>
       </motion.div>
-      )}
-
-      {/* Global Floating AI Assistant Icon */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 1, duration: 0.5 }}
-        className="fixed bottom-6 right-6 z-[100] no-print"
-      >
-        <a 
-          href="https://gemini.google.com/gem/1Rj6lnR1zxTVTo5lD3faANn3F6zinnvqL?usp=sharing"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block"
-        >
-          <motion.div
-            animate={{ 
-              y: [0, -10, 0],
-            }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-            className="relative group cursor-pointer"
-          >
-            {/* Glow Effect */}
-            <div className="absolute inset-0 bg-[#5A5A40]/20 blur-2xl rounded-full scale-150 animate-pulse" />
-            
-            {/* Button Container */}
-            <div className="w-14 h-14 md:w-16 md:h-16 bg-[#5A5A40] rounded-full shadow-[0_10px_30px_rgba(90,90,64,0.3)] flex items-center justify-center border-4 border-white relative overflow-hidden group-hover:scale-110 transition-transform duration-300">
-              <Bot size={28} className="text-white drop-shadow-md" />
-              
-              {/* Small Sparkle */}
-              <div className="absolute top-2 right-2">
-                <div className="w-1.5 h-1.5 bg-white rounded-full animate-ping opacity-60" />
-              </div>
-            </div>
-
-            {/* Tooltip/Label */}
-            <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 bg-white text-[#5A5A40] text-xs font-bold px-3 py-1.5 rounded-xl shadow-xl border border-[#5A5A40]/10 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-              AI Learning Assistant
-            </div>
-          </motion.div>
-        </a>
-      </motion.div>
+    )}
     </div>
   );
 }

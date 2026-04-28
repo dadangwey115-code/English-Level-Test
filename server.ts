@@ -5,6 +5,7 @@ import Database from "better-sqlite3";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
+import { GoogleGenAI } from "@google/genai";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -121,6 +122,49 @@ async function startServer() {
       VALUES (?, ?, ?, ?, ?, ?)
     `).run(id, name, score, total, level, date);
     res.json({ success: true });
+  });
+
+  app.post("/api/ai/gemini", async (req, res) => {
+    const { profile, history, message, type, systemInstruction } = req.body;
+    
+    const apiKey = profile?.customApiKey || process.env.GEMINI_API_KEY || "";
+    if (!apiKey) {
+      return res.status(500).json({ error: "Gemini API Key not found" });
+    }
+
+    const ai = new GoogleGenAI({ apiKey });
+    
+    try {
+      if (type === "chat") {
+        const model = "gemini-3.1-pro-preview";
+        const contents = [
+          ...(history || []).map((m: any) => ({
+            role: m.role === 'user' ? 'user' : 'model',
+            parts: [{ text: m.text }]
+          })),
+          { role: 'user', parts: [{ text: message }] }
+        ];
+        
+        const response = await ai.models.generateContent({
+          model,
+          contents: contents as any,
+          config: {
+            systemInstruction: systemInstruction,
+          }
+        });
+        res.json({ text: response.text });
+      } else {
+        const model = "gemini-3-flash-preview";
+        const response = await ai.models.generateContent({
+          model,
+          contents: [{ role: 'user', parts: [{ text: message }] }],
+        });
+        res.json({ text: response.text });
+      }
+    } catch (error: any) {
+      console.error("Gemini Error:", error);
+      res.status(500).json({ error: error.message || "Failed to generate content" });
+    }
   });
 
   // Vite middleware for development
