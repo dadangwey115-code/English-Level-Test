@@ -1,22 +1,10 @@
 import { UserProfile, Message } from "../types";
+import { GoogleGenAI } from "@google/genai";
 
-async function callGeminiBackend(payload: any) {
-  const response = await fetch("/api/ai/gemini", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || "Failed to get AI response");
-  }
-
-  const data = await response.json();
-  return data.text;
-}
+const getAI = (profile?: UserProfile) => {
+  const apiKey = profile?.customApiKey || (process.env.GEMINI_API_KEY as string);
+  return new GoogleGenAI({ apiKey });
+};
 
 async function callOpenRouter(profile: UserProfile, systemInstruction: string, history: Message[], message: string) {
   const apiKey = profile.openRouterApiKey;
@@ -92,13 +80,22 @@ export async function getChatResponse(profile: UserProfile, history: Message[], 
     }
   }
 
-  return await callGeminiBackend({
-    type: "chat",
-    profile,
-    history,
-    message,
-    systemInstruction: SYSTEM_INSTRUCTION(profile)
+  const ai = getAI(profile);
+  const response = await ai.models.generateContent({
+    model: "gemini-3.1-pro-preview",
+    contents: [
+      ...history.map(m => ({
+        role: m.role === 'user' ? 'user' : 'model',
+        parts: [{ text: m.text }]
+      })),
+      { role: 'user', parts: [{ text: message }] }
+    ] as any,
+    config: {
+      systemInstruction: SYSTEM_INSTRUCTION(profile)
+    }
   });
+
+  return response.text || "I'm sorry, I couldn't generate a response.";
 }
 
 export async function getWordMeaning(word: string, profile?: UserProfile) {
@@ -115,11 +112,13 @@ export async function getWordMeaning(word: string, profile?: UserProfile) {
     }
   }
 
-  return await callGeminiBackend({
-    type: "prompt",
-    profile,
-    message: prompt
-  }) || "Meaning not found.";
+  const ai = getAI(profile);
+  const response = await ai.models.generateContent({
+    model: "gemini-3-flash-preview",
+    contents: [{ role: 'user', parts: [{ text: prompt }] }]
+  });
+
+  return response.text || "Meaning not found.";
 }
 
 export async function getWrongAnswerExplanation(question: string, chosenOption: string, options: string[], profile?: UserProfile) {
@@ -140,9 +139,11 @@ export async function getWrongAnswerExplanation(question: string, chosenOption: 
     }
   }
 
-  return await callGeminiBackend({
-    type: "prompt",
-    profile,
-    message: prompt
-  }) || "That's not quite right. Try looking at the grammar or context again!";
+  const ai = getAI(profile);
+  const response = await ai.models.generateContent({
+    model: "gemini-3-flash-preview",
+    contents: [{ role: 'user', parts: [{ text: prompt }] }]
+  });
+
+  return response.text || "That's not quite right. Try looking at the grammar or context again!";
 }
