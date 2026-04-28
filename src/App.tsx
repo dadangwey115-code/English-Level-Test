@@ -54,8 +54,8 @@ export default function App() {
   const [quotaExceeded, setQuotaExceeded] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showResetOptions, setShowResetOptions] = useState(false);
-  const [showGuide, setShowGuide] = useState(false);
   const [showPurpose, setShowPurpose] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
   const [showResources, setShowResources] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -237,11 +237,11 @@ Status: Learning from Web App`;
   };
 
   useEffect(() => {
-    (window as any).showGlobalGuide = () => setShowGuide(true);
     (window as any).showGlobalPurpose = () => setShowPurpose(true);
+    (window as any).showGlobalAbout = () => setShowAbout(true);
     return () => { 
-      delete (window as any).showGlobalGuide; 
       delete (window as any).showGlobalPurpose;
+      delete (window as any).showGlobalAbout;
     };
   }, []);
 
@@ -606,6 +606,70 @@ Status: Learning from Web App`;
       </AnimatePresence>
 
       <AnimatePresence>
+        {showAbout && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+          >
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white rounded-[32px] p-6 md:p-10 max-w-2xl w-full shadow-2xl space-y-8 max-h-[90vh] overflow-y-auto border border-[#5A5A40]/10"
+            >
+              <div className="flex items-center justify-between sticky top-0 bg-white pb-4 z-10 border-b border-[#5A5A40]/10">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#5A5A40] text-white flex items-center justify-center shadow-lg">
+                    <Sparkles size={20} />
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900">{t.aboutWebsite}</h3>
+                </div>
+                <button onClick={() => setShowAbout(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                  <X size={24} />
+                </button>
+              </div>
+
+              <div className="space-y-8">
+                <div className="p-6 md:p-8 bg-[#5A5A40] text-white rounded-[32px] shadow-xl relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
+                  <p className="text-lg md:text-xl font-bold leading-relaxed relative z-10">
+                    {t.websitePurpose}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {(t.purposePoints as string[]).map((point, idx) => (
+                    <motion.div 
+                      key={idx}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 * idx }}
+                      className="p-4 rounded-2xl bg-[#5A5A40]/5 border border-[#5A5A40]/10 text-sm font-bold text-[#5A5A40] flex items-center gap-3"
+                    >
+                      <CheckCircle2 size={18} className="text-green-600 flex-none" />
+                      {point}
+                    </motion.div>
+                  ))}
+                </div>
+
+                <div className="pt-4">
+                  <button 
+                    onClick={() => setShowAbout(false)}
+                    className="w-full bg-[#5A5A40] text-white py-4 rounded-full font-sans font-bold shadow-lg hover:bg-[#4a4a34] transition-all flex items-center justify-center gap-2"
+                  >
+                    <CheckCircle2 size={20} />
+                    {t.gotIt}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
         {showResources && (
           <motion.div 
             initial={{ opacity: 0 }}
@@ -683,121 +747,6 @@ Status: Learning from Web App`;
                 <div className="pt-6 pb-2">
                   <button 
                     onClick={() => setShowResources(false)}
-                    className="w-full bg-[#5A5A40] text-white py-4 rounded-full font-sans font-bold shadow-lg hover:bg-[#4a4a34] transition-all flex items-center justify-center gap-2"
-                  >
-                    <CheckCircle2 size={20} />
-                    {t.gotIt}
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {showGuide && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
-          >
-            <motion.div 
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white rounded-[32px] p-6 md:p-8 max-w-2xl w-full shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto"
-            >
-              <div className="flex items-center justify-between sticky top-0 bg-white pb-4 z-10 border-b border-[#5A5A40]/10">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#5A5A40]/10 flex items-center justify-center text-[#5A5A40]">
-                    <HelpCircle size={24} />
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900">{t.interactiveGuideTitle}</h3>
-                </div>
-                <button onClick={() => setShowGuide(false)} className="text-gray-400 hover:text-gray-600">
-                  <X size={24} />
-                </button>
-              </div>
-
-              <div className="space-y-8 py-4">
-                {/* Visual Sample 1: Chatting */}
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2 text-[#5A5A40] font-bold uppercase tracking-widest text-xs opacity-60">
-                    <MessageSquare size={14} />
-                    {t.guideStep2Title}
-                  </div>
-                  <div className="bg-[#f5f5f0] p-6 rounded-[32px] space-y-4 border border-[#5A5A40]/5">
-                    <div className="flex justify-end">
-                      <div className="bg-[#5A5A40] text-white px-4 py-2 rounded-2xl rounded-tr-none text-sm max-w-[80%] shadow-sm">
-                        {t.sampleChatUser}
-                      </div>
-                    </div>
-                    <div className="flex justify-start">
-                      <div className="bg-white text-gray-800 px-4 py-2 rounded-2xl rounded-tl-none text-sm max-w-[80%] shadow-sm border border-[#5A5A40]/10">
-                        {t.sampleChatModel}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Visual Sample 2: Magic Translation */}
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2 text-[#5A5A40] font-bold uppercase tracking-widest text-xs opacity-60">
-                    <Languages size={14} />
-                    {t.sampleTranslationTitle}
-                  </div>
-                  <div className="relative bg-[#f5f5f0] p-8 rounded-[32px] border border-[#5A5A40]/5 overflow-hidden">
-                    <div className="space-y-2">
-                      <p className="text-gray-800 text-lg">
-                        Let's have a <span className="bg-[#5A5A40]/20 px-1 rounded border border-[#5A5A40]/30 cursor-pointer font-bold">{t.sampleTranslationWord}</span> today.
-                      </p>
-                    </div>
-                    
-                    {/* Mock Tooltip */}
-                    <motion.div 
-                      initial={{ y: 10, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      transition={{ delay: 1, duration: 0.5 }}
-                      className="mt-4 bg-[#5A5A40] text-white p-4 rounded-2xl shadow-xl relative z-10"
-                    >
-                      <div className="flex items-center gap-2 mb-1">
-                        <Languages size={14} />
-                        <span className="font-bold text-xs uppercase tracking-widest opacity-80">Translation</span>
-                      </div>
-                      <p className="text-sm font-bold mb-1">{t.sampleTranslationWord}</p>
-                      <p className="text-xs leading-relaxed opacity-90">{t.sampleTranslationMeaning}</p>
-                      <div className="absolute -top-2 left-10 w-4 h-4 bg-[#5A5A40] rotate-45 -z-10"></div>
-                    </motion.div>
-                  </div>
-                  <p className="text-sm text-gray-500 italic px-2">
-                    {t.sampleTranslationDesc}
-                  </p>
-                </div>
-
-                {/* Steps List */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
-                  {[1, 4].map((num) => (
-                    <div key={num} className="flex gap-4 p-4 bg-[#5A5A40]/5 rounded-2xl border border-[#5A5A40]/10">
-                      <div className="flex-none w-8 h-8 rounded-full bg-[#5A5A40] text-white flex items-center justify-center font-bold text-sm shadow-md">
-                        {num}
-                      </div>
-                      <div className="space-y-1">
-                        <h4 className="font-bold text-gray-900 text-sm">
-                          {t[`guideStep${num}Title` as keyof typeof t]}
-                        </h4>
-                        <p className="text-[11px] text-gray-600 leading-relaxed">
-                          {t[`guideStep${num}Desc` as keyof typeof t]}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="pt-6">
-                  <button 
-                    onClick={() => setShowGuide(false)}
                     className="w-full bg-[#5A5A40] text-white py-4 rounded-full font-sans font-bold shadow-lg hover:bg-[#4a4a34] transition-all flex items-center justify-center gap-2"
                   >
                     <CheckCircle2 size={20} />
@@ -1740,11 +1689,11 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                       {t.globalMindset}
                     </button>
                     <button 
-                      onClick={() => (window as any).showGlobalGuide?.()} 
+                      onClick={() => (window as any).showGlobalAbout?.()} 
                       className="flex items-center gap-2 text-[#5A5A40] opacity-90 hover:opacity-100 transition-opacity font-sans text-sm font-bold"
                     >
-                      <HelpCircle size={18} />
-                      {t.userGuide}
+                      <Sparkles size={18} />
+                      {t.aboutWebsite}
                     </button>
                     <button 
                       onClick={onShowResources} 

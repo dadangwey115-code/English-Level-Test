@@ -93,6 +93,14 @@ export const translations = {
     learningGoals: "Learning Goals",
     levelAndSkills: "Level & Skills",
     settings: "Settings",
+    aboutWebsite: "About this Website",
+    websitePurpose: "Mingalar ESL Coach is designed to help you master English through personalized AI coaching and high-quality resources.",
+    purposePoints: [
+      "Test your English level with our interactive assessment.",
+      "Get personalized coaching from our Gemini Gem AI Assistant.",
+      "Access handpicked useful resources (A1-C1).",
+      "Download free learning eBooks and PDFs."
+    ],
     userGuide: "User Guide",
     guideIntro: "Master your English with Mingalar ESL Coach using these simple steps:",
     guideStep1Title: "1. Set Your Goals",
@@ -257,6 +265,14 @@ export const translations = {
     learningGoals: "သင်ယူမှု ရည်မှန်းချက်များ",
     levelAndSkills: "အဆင့်နှင့် အရည်အချင်းများ",
     settings: "ပြင်ဆင်ချက်များ",
+    aboutWebsite: "ဤဝက်ဘ်ဆိုက်အကြောင်း",
+    websitePurpose: "Mingalar ESL Coach သည် ကိုယ်ပိုင် AI နည်းပြနှင့် အရည်အသွေးမြင့် အရင်းအမြစ်များမှတစ်ဆင့် အင်္ဂလိပ်စာ ကျွမ်းကျင်စေရန် ဒီဇိုင်းထုတ်ထားခြင်း ဖြစ်ပါသည်။",
+    purposePoints: [
+      "အပြန်အလှန်တိုင်ပင်စပ်ဆိုမှုဖြင့် သင့်အင်္ဂလိပ်စာအဆင့်ကို စစ်ဆေးပါ။",
+      "Gemini Gem AI Assistant ထံမှ ကိုယ်ပိုင်သင်ကြားမှုများကို ရယူပါ။",
+      "ရွေးချယ်ထားသော အသုံးဝင်သည့် အရင်းအမြစ်များကို လေ့လာပါ။ (A1-C1)",
+      "အခမဲ့ လေ့လာမှုဆိုင်ရာ E-books နှင့် PDF များကို ဒေါင်းလုဒ်လုပ်ပါ။"
+    ],
     userGuide: "အသုံးပြုပုံ လမ်းညွှန်",
     guideIntro: "Mingalar ESL Coach ကို အထိရောက်ဆုံး အသုံးပြုနိုင်ရန် အောက်ပါအဆင့်များကို လေ့လာပါ-",
     guideStep1Title: "၁။ ရည်မှန်းချက်များ သတ်မှတ်ပါ",
