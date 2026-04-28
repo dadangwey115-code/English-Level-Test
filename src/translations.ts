@@ -161,7 +161,9 @@ export const translations = {
     usaLearnsDesc: "Specialized in American English, speaking, and listening.",
     saylorDesc: "College-level academic English with free verified certificates.",
     voaDesc: "News-based lessons with slowed-down audio for better listening.",
-    cambridgeDesc: "Official practice activities and exam preparation for all levels."
+    cambridgeDesc: "Official practice activities and exam preparation for all levels.",
+    learningEbooks: "Learning eBooks (PDF)",
+    ebooksDesc: "Download free English learning books and resources."
   },
   my: {
     appName: "မင်္ဂလာ အင်္ဂလိပ်စာ နည်းပြ",
@@ -323,6 +325,8 @@ export const translations = {
     usaLearnsDesc: "American English, Speaking နှင့် Listening တို့ကို အဓိကထား လေ့လာနိုင်ပါသည်။",
     saylorDesc: "တက္ကသိုလ်အဆင့် အင်္ဂလိပ်စာကို အခမဲ့ အောင်လက်မှတ်ဖြင့် လေ့လာနိုင်ပါသည်။",
     voaDesc: "နားထောင်မှု စွမ်းရည်အတွက် သတင်းများကို အခြေခံ၍ ဖြည်းဖြည်းချင်း ဖတ်ပြသော သင်ခန်းစာများ ဖြစ်ပါသည်။",
-    cambridgeDesc: "Cambridge အဆင့်အတန်းမီ လေ့ကျင့်ခန်းများနှင့် စာမေးပွဲ ပြင်ဆင်မှုများ ဖြစ်ပါသည်။"
+    cambridgeDesc: "Cambridge အဆင့်အတန်းမီ လေ့ကျင့်ခန်းများနှင့် စာမေးပွဲ ပြင်ဆင်မှုများ ဖြစ်ပါသည်။",
+    learningEbooks: "လေ့လာမှုဆိုင်ရာ E-books (PDF)",
+    ebooksDesc: "အခမဲ့ အင်္ဂလိပ်စာ လေ့လာမှု စာအုပ်များနှင့် အရင်းအမြစ်များကို ဒေါင်းလုဒ်လုပ်ပါ။"
   }
 };

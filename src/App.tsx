@@ -32,7 +32,8 @@ import {
   Link,
   Copy,
   ExternalLink,
-  Library
+  Library,
+  Book
 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -335,6 +336,15 @@ Status: Learning from Web App`;
                 >
                   <Library size={16} className="md:size-5" />
                 </button>
+                <a 
+                  href="https://drive.google.com/drive/folders/1wlaU3O82loDnk9biiifUQxCtAJlhwZBQ?usp=sharing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-7 h-7 md:w-9 md:h-9 flex items-center justify-center hover:bg-white rounded-full transition-colors text-[#5A5A40]"
+                  title={t.learningEbooks}
+                >
+                  <Book size={16} className="md:size-5" />
+                </a>
                 <button 
                   onClick={resetChat}
                   className="w-7 h-7 md:w-9 md:h-9 flex items-center justify-center hover:bg-white rounded-full transition-colors text-[#5A5A40]"
@@ -1743,6 +1753,15 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                       <Library size={18} />
                       {t.usefulResources}
                     </button>
+                    <a 
+                      href="https://drive.google.com/drive/folders/1wlaU3O82loDnk9biiifUQxCtAJlhwZBQ?usp=sharing"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-[#5A5A40] opacity-90 hover:opacity-100 transition-opacity font-sans text-sm font-bold"
+                    >
+                      <Book size={18} />
+                      {t.learningEbooks}
+                    </a>
                     {onCancel && <button onClick={onCancel} className="text-[#5A5A40] opacity-90 hover:opacity-100 transition-opacity font-sans text-sm">{t.cancel}</button>}
                   </div>
                   <button 
