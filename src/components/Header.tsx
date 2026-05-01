@@ -63,7 +63,7 @@ const Header: React.FC<HeaderProps> = ({
       <div className="flex items-center gap-2 md:gap-3 flex-none">
         <button 
           onClick={toggleLang}
-          className="h-10 md:h-11 px-3 md:px-4 bg-[#5A5A40]/10 hover:bg-[#5A5A40]/20 rounded-full transition-colors text-[#5A5A40] font-sans font-bold text-xs md:text-sm flex items-center gap-1.5 touch-manipulation"
+          className={`h-10 md:h-11 px-3 md:px-4 bg-[#5A5A40]/10 hover:bg-[#5A5A40]/20 rounded-full transition-colors text-[#5A5A40] font-sans font-bold text-xs md:text-sm flex items-center gap-1.5 touch-manipulation ${lang === 'my' ? 'mm-text min-w-[64px] justify-center' : ''}`}
           title="Change Language"
           aria-label="Change Language"
         >
