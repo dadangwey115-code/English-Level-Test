@@ -5,7 +5,6 @@ import { QuizQuestion } from '../quizData';
 
 interface QuizSectionProps {
   t: any;
-  lang: string;
   quizStep: number;
   activeQuestions: QuizQuestion[];
   timeLeft: number;
@@ -22,7 +21,6 @@ interface QuizSectionProps {
 
 const QuizSection: React.FC<QuizSectionProps> = ({
   t,
-  lang,
   quizStep,
   activeQuestions,
   timeLeft,
@@ -43,9 +41,9 @@ const QuizSection: React.FC<QuizSectionProps> = ({
       <div className="space-y-4 mb-6">
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0">
-            <h2 className={`text-xl md:text-2xl font-bold truncate ${lang === 'my' ? 'mm-text' : ''}`}>{t.quizTitle}</h2>
+            <h2 className="text-xl md:text-2xl font-bold truncate">{t.quizTitle}</h2>
             <div className="flex items-center gap-2 mt-1">
-              <span className={`text-[9px] md:text-[10px] font-sans font-bold uppercase tracking-widest text-[#5A5A40] opacity-60 ${lang === 'my' ? 'mm-text' : ''}`}>
+              <span className="text-[9px] md:text-[10px] font-sans font-bold uppercase tracking-widest text-[#5A5A40] opacity-60">
                 {t[currentQuestion.skill.toLowerCase() as keyof typeof t]}
               </span>
             </div>
@@ -162,10 +160,10 @@ const QuizSection: React.FC<QuizSectionProps> = ({
         </AnimatePresence>
       </div>
 
-      <div className="flex flex-col items-center gap-4 mt-12 pb-8 border-t border-[#5A5A40]/5 pt-8">
+      <div className="flex flex-col items-center gap-4 mt-8">
         <button 
           onClick={onExit}
-          className={`text-red-500 hover:text-red-600 transition-colors font-sans text-base font-bold flex items-center gap-2 px-8 py-3.5 rounded-full hover:bg-red-50 border-2 border-red-100 hover:border-red-200 shadow-sm touch-manipulation active:scale-95 ${lang === 'my' ? 'mm-text' : ''}`}
+          className="text-red-500 opacity-60 hover:opacity-100 transition-opacity font-sans text-base font-bold flex items-center gap-2 px-6 py-3 rounded-full hover:bg-red-50 touch-manipulation"
         >
           <X size={18} />
           {t.exitTest}

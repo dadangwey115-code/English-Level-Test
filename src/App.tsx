@@ -299,17 +299,18 @@ Status: Learning from Web App`;
             />
 
             {/* Chat Area */}
+
+            {/* Chat Area */}
             <div 
               ref={scrollRef}
               className="flex-1 overflow-y-auto space-y-6 mb-4 pr-2 md:pr-4 scrollbar-thin scrollbar-thumb-[#5A5A40]/20"
             >
-          <AnimatePresence mode="wait">
-            {messages.length === 0 && (
-              <div className={`text-center py-20 opacity-40 italic font-sans text-sm ${lang === 'my' ? 'mm-text leading-loose px-4' : ''}`}>
-                {t.startJourney}
-              </div>
-            )}
-            {messages.map((msg) => (
+              {messages.length === 0 && (
+                <div className="text-center py-20 opacity-40 italic font-sans text-sm">
+                  {t.startJourney}
+                </div>
+              )}
+              {messages.map((msg) => (
                 <motion.div
                   key={msg.id}
                   initial={{ opacity: 0, y: 10 }}
@@ -341,7 +342,6 @@ Status: Learning from Web App`;
                   </div>
                 </div>
               )}
-              </AnimatePresence>
             </div>
 
             {/* Input Area */}
@@ -1304,7 +1304,7 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
         <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-white w-full rounded-[40px] shadow-2xl p-6 md:p-16 relative overflow-y-auto max-h-[95vh] my-4 md:my-8 scrollbar-hide"
+        className="bg-white w-full rounded-[40px] shadow-2xl p-6 md:p-16 relative overflow-hidden my-4 md:my-8"
       >
         {/* Decorative background element */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-[#5A5A40]/5 rounded-bl-full -mr-8 -mt-8" />
@@ -1322,7 +1322,7 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
         {/* Language Toggle in Assessment */}
         <button 
           onClick={toggleLang}
-          className={`absolute top-4 md:top-6 left-4 md:left-6 px-4 py-2 bg-[#5A5A40]/10 hover:bg-[#5A5A40]/20 rounded-full transition-all text-[#5A5A40] font-sans font-bold text-xs flex items-center gap-2 z-20 shadow-sm border border-[#5A5A40]/5 active:scale-95 ${lang === 'my' ? 'mm-text min-w-[70px] justify-center' : ''}`}
+          className="absolute top-4 md:top-6 left-4 md:left-6 px-3 py-1 bg-[#5A5A40]/10 hover:bg-[#5A5A40]/20 rounded-full transition-colors text-[#5A5A40] font-sans font-bold text-xs flex items-center gap-2 z-20"
         >
           <Languages size={14} />
           {lang === 'en' ? 'MY' : 'EN'}
@@ -1425,7 +1425,6 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                 {!quizFinished ? (
                   <QuizSection 
                     t={t}
-                    lang={lang}
                     quizStep={quizStep}
                     activeQuestions={activeQuestions}
                     timeLeft={timeLeft}
@@ -1460,43 +1459,43 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                     exit={{ opacity: 0, x: -20 }}
                     className="space-y-6"
                   >
-                <h2 className={`text-4xl font-bold tracking-tight mb-4 ${lang === 'my' ? 'mm-text' : ''}`}>{t.mingalarPar}</h2>
-                <p className={`text-lg text-[#5A5A40] mb-8 ${lang === 'my' ? 'mm-text leading-relaxed' : ''}`}>{t.namePrompt}</p>
+                    <h2 className="text-4xl font-bold tracking-tight mb-4">{t.mingalarPar}</h2>
+                <p className="text-lg text-[#5A5A40] mb-8">{t.namePrompt}</p>
                 <input 
                   type="text"
                   placeholder={t.yourName}
                   aria-label={t.yourName}
-                  className={`w-full text-2xl border-b-2 border-[#5A5A40]/20 focus:border-[#5A5A40] outline-none py-4 transition-colors bg-transparent ${lang === 'my' ? 'mm-text' : ''}`}
+                  className="w-full text-2xl border-b-2 border-[#5A5A40]/20 focus:border-[#5A5A40] outline-none py-4 transition-colors bg-transparent"
                   value={formData.name || ''}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   autoFocus
                 />
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-8">
-                  <div className="flex flex-wrap gap-4 order-2 sm:order-1 items-center">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8">
+                  <div className="flex flex-wrap gap-4 order-2 sm:order-1">
                     <button 
                       onClick={onShowAdmin}
-                      className={`flex items-center gap-2 bg-[#5A5A40]/10 text-[#5A5A40] px-4 py-2.5 rounded-full transition-all hover:bg-[#5A5A40]/20 font-sans font-bold text-xs ${lang === 'my' ? 'mm-text' : ''}`}
+                      className="flex items-center gap-2 bg-[#5A5A40]/10 text-[#5A5A40] px-4 py-2 rounded-full transition-all hover:bg-[#5A5A40]/20 font-sans font-bold text-xs"
                     >
                       <ShieldCheck size={14} />
                       Admin
                     </button>
                     <button 
                       onClick={() => (window as any).showGlobalPurpose?.()} 
-                      className={`flex items-center gap-2 bg-[#5A5A40] text-white px-4 py-2.5 rounded-full transition-all hover:bg-[#4a4a34] shadow-md font-sans font-bold text-xs ${lang === 'my' ? 'mm-text' : ''}`}
+                      className="flex items-center gap-2 bg-[#5A5A40] text-white px-4 py-2 rounded-full transition-all hover:bg-[#4a4a34] shadow-md font-sans font-bold text-xs"
                     >
                       <Bot size={14} />
                       {t.globalMindset}
                     </button>
                     <button 
                       onClick={() => (window as any).showGlobalAbout?.()} 
-                      className={`flex items-center gap-2 text-[#5A5A40] px-3 py-1.5 bg-[#5A5A40]/5 rounded-xl opacity-90 hover:opacity-100 transition-opacity font-sans text-sm font-bold ${lang === 'my' ? 'mm-text' : ''}`}
+                      className="flex items-center gap-2 text-[#5A5A40] opacity-90 hover:opacity-100 transition-opacity font-sans text-sm font-bold"
                     >
                       <Sparkles size={18} />
                       {t.aboutWebsite}
                     </button>
                     <button 
                       onClick={onShowResources} 
-                      className={`flex items-center gap-2 text-[#5A5A40] px-3 py-1.5 bg-[#5A5A40]/5 rounded-xl opacity-90 hover:opacity-100 transition-opacity font-sans text-sm font-bold ${lang === 'my' ? 'mm-text' : ''}`}
+                      className="flex items-center gap-2 text-[#5A5A40] opacity-90 hover:opacity-100 transition-opacity font-sans text-sm font-bold"
                     >
                       <Library size={18} />
                       {t.usefulResources}
@@ -1505,7 +1504,7 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                       href="https://drive.google.com/drive/folders/1wlaU3O82loDnk9biiifUQxCtAJlhwZBQ?usp=sharing"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`flex items-center gap-2 text-[#5A5A40] px-3 py-1.5 bg-[#5A5A40]/5 rounded-xl opacity-90 hover:opacity-100 transition-opacity font-sans text-sm font-bold ${lang === 'my' ? 'mm-text' : ''}`}
+                      className="flex items-center gap-2 text-[#5A5A40] opacity-90 hover:opacity-100 transition-opacity font-sans text-sm font-bold"
                     >
                       <Book size={18} />
                       {t.learningEbooks}
@@ -1514,18 +1513,18 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                       href="https://komoe.mindset-it.online/"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`flex items-center gap-2 text-[#5A5A40] px-3 py-1.5 bg-[#5A5A40]/5 rounded-xl opacity-90 hover:opacity-100 transition-opacity font-sans text-sm font-bold ${lang === 'my' ? 'mm-text' : ''}`}
+                      className="flex items-center gap-2 text-[#5A5A40] opacity-90 hover:opacity-100 transition-opacity font-sans text-sm font-bold"
                       title="Created by Ko Moe"
                     >
                       <Link size={18} />
                       Ko Moe
                     </a>
-                    {onCancel && <button onClick={onCancel} className={`text-[#5A5A40] opacity-90 hover:opacity-100 transition-opacity font-sans text-sm font-bold ${lang === 'my' ? 'mm-text' : ''}`}>{t.cancel}</button>}
+                    {onCancel && <button onClick={onCancel} className="text-[#5A5A40] opacity-90 hover:opacity-100 transition-opacity font-sans text-sm">{t.cancel}</button>}
                   </div>
                   <button 
                     disabled={!formData.name}
                     onClick={nextStep}
-                    className={`w-full sm:w-auto bg-[#5A5A40] text-white px-10 py-4 rounded-full font-sans font-bold flex items-center justify-center gap-2 hover:bg-[#4a4a34] transition-all disabled:opacity-50 order-1 sm:order-2 shadow-lg min-h-[56px] ${lang === 'my' ? 'mm-text text-lg px-8' : ''}`}
+                    className="w-full sm:w-auto bg-[#5A5A40] text-white px-10 py-4 rounded-full font-sans font-bold flex items-center justify-center gap-2 hover:bg-[#4a4a34] transition-all disabled:opacity-50 order-1 sm:order-2"
                   >
                     {t.continue} <ChevronRight size={20} />
                   </button>
@@ -1547,8 +1546,8 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                       <HelpCircle size={32} className="md:w-10 md:h-10" />
                     </div>
                     <div className="space-y-2">
-                      <h2 className={`text-2xl md:text-3xl font-bold tracking-tight ${lang === 'my' ? 'mm-text' : ''}`}>{t.quizTitle}</h2>
-                      <p className={`text-[#5A5A40] opacity-70 max-w-sm mx-auto text-sm md:text-base ${lang === 'my' ? 'mm-text leading-relaxed' : ''}`}>
+                      <h2 className="text-2xl md:text-3xl font-bold tracking-tight">{t.quizTitle}</h2>
+                      <p className="text-[#5A5A40] opacity-70 max-w-sm mx-auto text-sm md:text-base">
                         {t.selectQuestionCount}
                       </p>
                     </div>
@@ -1567,7 +1566,7 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                               setQuizStarted(true);
                               setTimeLeft(QUESTION_TIME_LIMIT);
                             }}
-                            className={`bg-white border-2 border-[#5A5A40]/10 text-[#5A5A40] px-8 py-3 md:py-4 rounded-2xl font-sans font-bold hover:border-[#5A5A40] hover:bg-[#5A5A40]/5 transition-all w-full text-center ${lang === 'my' ? 'mm-text' : ''}`}
+                            className="bg-white border-2 border-[#5A5A40]/10 text-[#5A5A40] px-8 py-3 md:py-4 rounded-2xl font-sans font-bold hover:border-[#5A5A40] hover:bg-[#5A5A40]/5 transition-all w-full text-center"
                           >
                             {count} {t.questions}
                           </button>
@@ -1575,13 +1574,13 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                       </div>
                       <div className="max-w-sm mx-auto p-4 bg-amber-50 border border-amber-100 rounded-2xl text-left flex gap-3 mt-4">
                         <Timer size={20} className="text-amber-600 flex-none mt-0.5" />
-                        <p className={`text-xs text-amber-800 leading-relaxed ${lang === 'my' ? 'mm-text' : ''}`}>
+                        <p className="text-xs text-amber-800 leading-relaxed">
                           {t.timerSuggestion}
                         </p>
                       </div>
                       <button 
                         onClick={() => setShowManualLevel(true)}
-                        className={`text-[#5A5A40] font-sans font-bold text-sm opacity-60 hover:opacity-100 transition-opacity py-2 mt-4 px-6 border border-transparent rounded-full hover:bg-[#5A5A40]/5 ${lang === 'my' ? 'mm-text' : ''}`}
+                        className="text-[#5A5A40] font-sans font-bold text-sm opacity-60 hover:opacity-100 transition-opacity py-2 mt-4"
                       >
                         {t.skip}
                       </button>
@@ -1590,10 +1589,10 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                 ) : (
                   <div className="space-y-4 md:space-y-6 flex-1 overflow-y-auto pr-2 scrollbar-hide pb-20 md:pb-0">
                     <div className="flex items-center justify-between mb-2 md:mb-4 sticky top-0 bg-white/90 backdrop-blur-sm pt-2 pb-2 z-10">
-                      <h2 className={`text-2xl md:text-3xl font-bold tracking-tight ${lang === 'my' ? 'mm-text' : ''}`}>{t.manualLevelSelection}</h2>
+                      <h2 className="text-2xl md:text-3xl font-bold tracking-tight">{t.manualLevelSelection}</h2>
                       <button 
                         onClick={() => setShowManualLevel(false)}
-                        className={`text-[10px] md:text-xs font-sans font-bold text-[#5A5A40] bg-[#5A5A40]/10 px-3 py-2 md:px-5 md:py-2.5 rounded-full hover:bg-[#5A5A40]/20 transition-all whitespace-nowrap ml-2 ${lang === 'my' ? 'mm-text' : ''}`}
+                        className="text-[10px] md:text-xs font-sans font-bold text-[#5A5A40] bg-[#5A5A40]/10 px-3 py-1.5 md:px-4 md:py-2 rounded-full hover:bg-[#5A5A40]/20 transition-all whitespace-nowrap ml-2"
                       >
                         {t.takeQuiz}
                       </button>
@@ -1632,12 +1631,12 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
 
                 {formData.level && !showManualLevel && (
                   <div className="pt-4 md:pt-6 border-t border-[#5A5A40]/10 text-center mt-auto">
-                    <p className={`text-xs md:text-sm font-sans uppercase tracking-widest opacity-60 mb-2 md:mb-4 ${lang === 'my' ? 'mm-text' : ''}`}>{lang === 'my' ? 'လက်ရှိရွေးချယ်ထားသော' : 'Current Selection'}</p>
+                    <p className="text-xs md:text-sm font-sans uppercase tracking-widest opacity-60 mb-2 md:mb-4">Current Selection</p>
                     <div className="inline-flex items-center gap-3 md:gap-4 bg-[#5A5A40]/5 px-4 py-2 md:px-6 md:py-3 rounded-2xl border border-[#5A5A40]/20">
                       <span className="text-xl md:text-2xl font-bold text-[#5A5A40]">{formData.level}</span>
                       <button 
                         onClick={nextStep}
-                        className={`text-[#5A5A40] font-sans font-bold text-sm hover:underline ${lang === 'my' ? 'mm-text' : ''}`}
+                        className="text-[#5A5A40] font-sans font-bold text-sm hover:underline"
                       >
                         {t.continue} →
                       </button>
@@ -1662,7 +1661,7 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                 exit={{ opacity: 0, x: -20 }}
                 className="space-y-6"
               >
-                <h2 className={`text-3xl font-bold tracking-tight mb-4 ${lang === 'my' ? 'mm-text' : ''}`}>{t.primaryGoals}</h2>
+                <h2 className="text-3xl font-bold tracking-tight mb-4">{t.primaryGoals}</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {goals.map((goal) => (
                     <button
@@ -1672,7 +1671,7 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                         formData.goals?.includes(goal) 
                           ? 'border-[#5A5A40] bg-[#5A5A40]/5 text-[#5A5A40] font-bold' 
                           : 'border-[#5A5A40]/10 hover:border-[#5A5A40]/30'
-                      } ${lang === 'my' ? 'mm-text' : ''}`}
+                      }`}
                     >
                       {goal === 'Professional' && <Target size={24} />}
                       {goal === 'Academic' && <BookOpen size={24} />}
@@ -1684,13 +1683,13 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                 </div>
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8">
                   <div className="flex gap-4 order-2 sm:order-1">
-                    <button onClick={prevStep} className={`text-[#5A5A40] opacity-60 hover:opacity-100 transition-opacity font-sans text-sm font-bold ${lang === 'my' ? 'mm-text' : ''}`}>{t.back}</button>
-                    {onCancel && <button onClick={onCancel} className={`text-[#5A5A40] opacity-60 hover:opacity-100 transition-opacity font-sans text-sm font-bold ${lang === 'my' ? 'mm-text' : ''}`}>{t.cancel}</button>}
+                    <button onClick={prevStep} className="text-[#5A5A40] opacity-60 hover:opacity-100 transition-opacity font-sans text-sm">{t.back}</button>
+                    {onCancel && <button onClick={onCancel} className="text-[#5A5A40] opacity-60 hover:opacity-100 transition-opacity font-sans text-sm">{t.cancel}</button>}
                   </div>
                   <button 
                     disabled={formData.goals?.length === 0}
                     onClick={nextStep}
-                    className={`w-full sm:w-auto bg-[#5A5A40] text-white px-10 py-4 rounded-full font-sans font-bold flex items-center justify-center gap-2 hover:bg-[#4a4a34] transition-all disabled:opacity-50 order-1 sm:order-2 shadow-lg ${lang === 'my' ? 'mm-text px-8' : ''}`}
+                    className="w-full sm:w-auto bg-[#5A5A40] text-white px-10 py-4 rounded-full font-sans font-bold flex items-center justify-center gap-2 hover:bg-[#4a4a34] transition-all disabled:opacity-50 order-1 sm:order-2"
                   >
                     {t.continue} <ChevronRight size={20} />
                   </button>
@@ -1706,7 +1705,7 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                 exit={{ opacity: 0, x: -20 }}
                 className="space-y-6"
               >
-                <h2 className={`text-3xl font-bold tracking-tight mb-4 ${lang === 'my' ? 'mm-text' : ''}`}>{t.focusSkills}</h2>
+                <h2 className="text-3xl font-bold tracking-tight mb-4">{t.focusSkills}</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {skills.map((skill) => (
                     <button
@@ -1716,7 +1715,7 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                         formData.prioritySkills?.includes(skill) 
                           ? 'border-[#5A5A40] bg-[#5A5A40]/5 text-[#5A5A40] font-bold' 
                           : 'border-[#5A5A40]/10 hover:border-[#5A5A40]/30'
-                      } ${lang === 'my' ? 'mm-text' : ''}`}
+                      }`}
                     >
                       {skill === 'Speaking' && <Mic size={24} />}
                       {skill === 'Listening' && <Languages size={24} />}
@@ -1728,13 +1727,13 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                 </div>
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8">
                   <div className="flex gap-4 order-2 sm:order-1">
-                    <button onClick={prevStep} className={`text-[#5A5A40] opacity-60 hover:opacity-100 transition-opacity font-sans text-sm font-bold ${lang === 'my' ? 'mm-text' : ''}`}>{t.back}</button>
-                    {onCancel && <button onClick={onCancel} className={`text-[#5A5A40] opacity-60 hover:opacity-100 transition-opacity font-sans text-sm font-bold ${lang === 'my' ? 'mm-text' : ''}`}>{t.cancel}</button>}
+                    <button onClick={prevStep} className="text-[#5A5A40] opacity-60 hover:opacity-100 transition-opacity font-sans text-sm">{t.back}</button>
+                    {onCancel && <button onClick={onCancel} className="text-[#5A5A40] opacity-60 hover:opacity-100 transition-opacity font-sans text-sm">{t.cancel}</button>}
                   </div>
                   <button 
                     disabled={formData.prioritySkills?.length === 0}
                     onClick={nextStep}
-                    className={`w-full sm:w-auto bg-[#5A5A40] text-white px-10 py-4 rounded-full font-sans font-bold flex items-center justify-center gap-2 hover:bg-[#4a4a34] transition-all disabled:opacity-50 order-1 sm:order-2 shadow-lg ${lang === 'my' ? 'mm-text px-8' : ''}`}
+                    className="w-full sm:w-auto bg-[#5A5A40] text-white px-10 py-4 rounded-full font-sans font-bold flex items-center justify-center gap-2 hover:bg-[#4a4a34] transition-all disabled:opacity-50 order-1 sm:order-2"
                   >
                     {t.continue} <ChevronRight size={20} />
                   </button>
@@ -1750,10 +1749,10 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                 exit={{ opacity: 0, x: -20 }}
                 className="space-y-8"
               >
-                <h2 className={`text-3xl font-bold tracking-tight mb-4 ${lang === 'my' ? 'mm-text' : ''}`}>{t.finalDetails}</h2>
+                <h2 className="text-3xl font-bold tracking-tight mb-4">{t.finalDetails}</h2>
                 
                 <div className="space-y-4">
-                  <label className={`block text-sm font-sans uppercase tracking-widest opacity-60 font-bold ${lang === 'my' ? 'mm-text' : ''}`}>{t.dailyCommitment}</label>
+                  <label className="block text-sm font-sans uppercase tracking-widest opacity-60 font-bold">{t.dailyCommitment}</label>
                   <div className="flex items-center gap-4">
                     <Clock className="text-[#5A5A40]" />
                     <input 
@@ -1771,7 +1770,7 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                 </div>
 
                 <div className="space-y-4">
-                  <label className={`block text-sm font-sans uppercase tracking-widest opacity-60 font-bold ${lang === 'my' ? 'mm-text' : ''}`}>{t.preferredDialect}</label>
+                  <label className="block text-sm font-sans uppercase tracking-widest opacity-60 font-bold">{t.preferredDialect}</label>
                   <div className="flex gap-4">
                     {dialects.map(d => (
                       <button
@@ -1781,7 +1780,7 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                           formData.preferredDialect === d 
                             ? 'border-[#5A5A40] bg-[#5A5A40]/5 text-[#5A5A40] font-bold' 
                             : 'border-[#5A5A40]/10 hover:border-[#5A5A40]/30'
-                        } ${lang === 'my' ? 'mm-text' : ''}`}
+                        }`}
                       >
                         {d === 'American' ? t.american : t.british}
                       </button>
@@ -1790,7 +1789,7 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                 </div>
 
                 <div className="space-y-4">
-                  <label className={`block text-sm font-sans uppercase tracking-widest opacity-60 font-bold ${lang === 'my' ? 'mm-text' : ''}`}>{t.customApiKeyLabel}</label>
+                  <label className="block text-sm font-sans uppercase tracking-widest opacity-60 font-bold">{t.customApiKeyLabel}</label>
                   <div className="flex items-center gap-4">
                     <Settings className="text-[#5A5A40]" />
                     <input 
@@ -1798,14 +1797,14 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                       placeholder={t.customApiKeyPlaceholder}
                       value={formData.customApiKey || ''}
                       onChange={(e) => setFormData({ ...formData, customApiKey: e.target.value })}
-                      className={`flex-1 bg-transparent border-b-2 border-[#5A5A40]/20 focus:border-[#5A5A40] outline-none py-2 font-sans ${lang === 'my' ? 'mm-text' : ''}`}
+                      className="flex-1 bg-transparent border-b-2 border-[#5A5A40]/20 focus:border-[#5A5A40] outline-none py-2 font-sans"
                       aria-label={t.customApiKeyLabel}
                     />
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  <label className={`block text-sm font-sans uppercase tracking-widest opacity-60 font-bold ${lang === 'my' ? 'mm-text' : ''}`}>{t.openRouterApiKeyLabel}</label>
+                  <label className="block text-sm font-sans uppercase tracking-widest opacity-60 font-bold">{t.openRouterApiKeyLabel}</label>
                   <div className="flex items-center gap-4">
                     <Settings className="text-[#5A5A40]" />
                     <input 
@@ -1813,7 +1812,7 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                       placeholder={t.openRouterApiKeyPlaceholder}
                       value={formData.openRouterApiKey || ''}
                       onChange={(e) => setFormData({ ...formData, openRouterApiKey: e.target.value })}
-                      className={`flex-1 bg-transparent border-b-2 border-[#5A5A40]/20 focus:border-[#5A5A40] outline-none py-2 font-sans ${lang === 'my' ? 'mm-text' : ''}`}
+                      className="flex-1 bg-transparent border-b-2 border-[#5A5A40]/20 focus:border-[#5A5A40] outline-none py-2 font-sans"
                       aria-label={t.openRouterApiKeyLabel}
                     />
                   </div>
@@ -1821,13 +1820,21 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
 
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8">
                   <div className="flex gap-4 order-2 sm:order-1">
-                    <button onClick={prevStep} className={`text-[#5A5A40] opacity-60 hover:opacity-100 transition-opacity font-sans text-sm font-bold ${lang === 'my' ? 'mm-text' : ''}`}>{t.back}</button>
-                    {onCancel && <button onClick={onCancel} className={`text-[#5A5A40] opacity-60 hover:opacity-100 transition-opacity font-sans text-sm font-bold ${lang === 'my' ? 'mm-text' : ''}`}>{t.cancel}</button>}
+                    <button onClick={prevStep} className="text-[#5A5A40] opacity-60 hover:opacity-100 transition-opacity font-sans text-sm">{t.back}</button>
+                    {onCancel && <button onClick={onCancel} className="text-[#5A5A40] opacity-60 hover:opacity-100 transition-opacity font-sans text-sm">{t.cancel}</button>}
                   </div>
                   <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto order-1 sm:order-2">
+                    {onCancel && (
+                      <button 
+                        onClick={onCancel}
+                        className="w-full sm:w-auto px-10 py-4 rounded-full font-sans font-bold text-[#5A5A40] border border-[#5A5A40]/20 hover:bg-[#5A5A40]/5 transition-all"
+                      >
+                        {t.cancel}
+                      </button>
+                    )}
                     <button 
                       onClick={() => onSubmit(formData as UserProfile)}
-                      className={`w-full sm:w-auto bg-[#5A5A40] text-white px-10 py-4 rounded-full font-sans font-bold flex items-center justify-center gap-2 hover:bg-[#4a4a34] transition-all shadow-lg min-h-[56px] ${lang === 'my' ? 'mm-text text-lg px-8' : ''}`}
+                      className="w-full sm:w-auto bg-[#5A5A40] text-white px-10 py-4 rounded-full font-sans font-bold flex items-center justify-center gap-2 hover:bg-[#4a4a34] transition-all shadow-lg"
                     >
                       {initialData ? t.saveChanges : t.startLearning} <ChevronRight size={20} />
                     </button>
@@ -1882,54 +1889,6 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                             className="w-full bg-gray-100 text-gray-700 py-4 rounded-full font-sans font-bold hover:bg-gray-200 transition-colors"
                           >
                             {t.keepProfile}
-                          </button>
-                        </div>
-                      </motion.div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                {/* Exit Confirmation Modal */}
-                <AnimatePresence>
-                  {showExitConfirm && (
-                    <motion.div 
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
-                    >
-                      <motion.div 
-                        initial={{ scale: 0.95, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0.95, opacity: 0 }}
-                        className="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full shadow-2xl space-y-6"
-                      >
-                        <div className="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto">
-                          <AlertCircle size={32} />
-                        </div>
-                        <div className="text-center space-y-2">
-                          <h3 className="text-xl font-bold text-gray-900">{lang === 'my' ? 'စာမေးပွဲမှ ထွက်ခွာမှာလား?' : 'Exit Test?'}</h3>
-                          <p className={`text-gray-600 text-sm leading-relaxed ${lang === 'my' ? 'mm-text' : ''}`}>
-                            {lang === 'my' ? 'သင့်ရဲ့ လက်ရှိတိုးတက်မှုတွေကို ဆုံးရှုံးသွားပါလိမ့်မယ်။' : 'You will lose your current progress if you exit now.'}
-                          </p>
-                        </div>
-                        <div className="flex flex-col gap-3 pt-4">
-                          <button 
-                            onClick={() => {
-                              setShowExitConfirm(false);
-                              setShowQuiz(false);
-                              setQuizStarted(false);
-                              setQuizStep(0);
-                            }}
-                            className={`w-full bg-red-600 text-white py-3 rounded-full font-sans font-bold hover:bg-red-700 transition-colors ${lang === 'my' ? 'mm-text' : ''}`}
-                          >
-                            {lang === 'my' ? 'ထွက်မည်' : 'Exit Anyway'}
-                          </button>
-                          <button 
-                            onClick={() => setShowExitConfirm(false)}
-                            className={`w-full bg-gray-100 text-gray-700 py-3 rounded-full font-sans font-bold hover:bg-gray-200 transition-colors ${lang === 'my' ? 'mm-text' : ''}`}
-                          >
-                            {lang === 'my' ? 'ဆက်သွားမည်' : 'Go Back'}
                           </button>
                         </div>
                       </motion.div>
