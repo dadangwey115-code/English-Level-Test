@@ -60,7 +60,7 @@ export default function App() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [lang, setLang] = useState<Language>('en');
+  const [lang, setLang] = useState<Language>('my');
   const [quotaExceeded, setQuotaExceeded] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showResetOptions, setShowResetOptions] = useState(false);
