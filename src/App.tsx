@@ -719,50 +719,97 @@ Status: Learning from Web App`;
         )}
       </AnimatePresence>
 
-      {/* Global Floating AI Assistant Icon */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 1, duration: 0.5 }}
-        className="fixed bottom-6 right-6 z-[100] no-print"
-      >
-        <a 
-          href="https://gemini.google.com/gem/1Rj6lnR1zxTVTo5lD3faANn3F6zinnvqL?usp=sharing"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block"
+      {/* Global Floating AI Assistant Icons */}
+      <div className="fixed bottom-6 right-6 z-[100] no-print flex flex-col gap-4">
+        {/* Assistant 1: Learning Assistant */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 1, duration: 0.5 }}
         >
-          <motion.div
-            animate={{ 
-              y: [0, -10, 0],
-            }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-            className="relative group cursor-pointer"
+          <a 
+            href="https://gemini.google.com/gem/1Rj6lnR1zxTVTo5lD3faANn3F6zinnvqL?usp=sharing"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block"
           >
-            {/* Glow Effect */}
-            <div className="absolute inset-0 bg-[#5A5A40]/20 blur-2xl rounded-full scale-150 animate-pulse" />
-            
-            {/* Button Container */}
-            <div className="w-14 h-14 md:w-16 md:h-16 bg-[#5A5A40] rounded-full shadow-[0_10px_30px_rgba(90,90,64,0.3)] flex items-center justify-center border-4 border-white relative overflow-hidden group-hover:scale-110 transition-transform duration-300">
-              <Bot size={28} className="text-white drop-shadow-md" />
+            <motion.div
+              animate={{ 
+                y: [0, -5, 0],
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="relative group cursor-pointer"
+            >
+              {/* Glow Effect */}
+              <div className="absolute inset-0 bg-[#5A5A40]/20 blur-2xl rounded-full scale-150 animate-pulse" />
               
-              {/* Small Sparkle */}
-              <div className="absolute top-2 right-2">
-                <div className="w-1.5 h-1.5 bg-white rounded-full animate-ping opacity-60" />
+              {/* Button Container */}
+              <div className="w-14 h-14 md:w-16 md:h-16 bg-[#5A5A40] rounded-full shadow-[0_10px_30px_rgba(90,90,64,0.3)] flex items-center justify-center border-4 border-white relative overflow-hidden group-hover:scale-110 transition-transform duration-300">
+                <Bot size={28} className="text-white drop-shadow-md" />
+                
+                {/* Small Sparkle */}
+                <div className="absolute top-2 right-2">
+                  <div className="w-1.5 h-1.5 bg-white rounded-full animate-ping opacity-60" />
+                </div>
               </div>
-            </div>
 
-            {/* Tooltip/Label */}
-            <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 bg-white text-[#5A5A40] text-xs font-bold px-3 py-1.5 rounded-xl shadow-xl border border-[#5A5A40]/10 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-              AI Learning Assistant
-            </div>
-          </motion.div>
-        </a>
-      </motion.div>
+              {/* Tooltip/Label */}
+              <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 bg-white text-[#5A5A40] text-xs font-bold px-3 py-1.5 rounded-xl shadow-xl border border-[#5A5A40]/10 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                AI Learning Assistant
+              </div>
+            </motion.div>
+          </a>
+        </motion.div>
+
+        {/* Assistant 2: Prompt Assistant */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 1.2, duration: 0.5 }}
+        >
+          <a 
+            href="https://gemini.google.com/gem/f72984cbf157?usp=sharing"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block"
+          >
+            <motion.div
+              animate={{ 
+                y: [0, -5, 0],
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 0.5
+              }}
+              className="relative group cursor-pointer"
+            >
+              {/* Glow Effect */}
+              <div className="absolute inset-0 bg-amber-500/10 blur-2xl rounded-full scale-150 animate-pulse" />
+              
+              {/* Button Container */}
+              <div className="w-14 h-14 md:w-16 md:h-16 bg-amber-600 rounded-full shadow-[0_10px_30px_rgba(217,119,6,0.3)] flex items-center justify-center border-4 border-white relative overflow-hidden group-hover:scale-110 transition-transform duration-300">
+                <Sparkles size={28} className="text-white drop-shadow-md" />
+                
+                {/* Small Sparkle */}
+                <div className="absolute top-2 right-2">
+                  <div className="w-1.5 h-1.5 bg-white rounded-full animate-ping opacity-60" />
+                </div>
+              </div>
+
+              {/* Tooltip/Label */}
+              <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 bg-white text-amber-700 text-xs font-bold px-3 py-1.5 rounded-xl shadow-xl border border-amber-600/10 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                AI Prompt Helper
+              </div>
+            </motion.div>
+          </a>
+        </motion.div>
+      </div>
     </div>
   );
 }

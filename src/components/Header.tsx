@@ -24,11 +24,11 @@ const Header: React.FC<HeaderProps> = ({
   onResetChat 
 }) => {
   return (
-    <header className="flex-none flex items-center justify-between mb-4 md:mb-6 border-b border-[#5A5A40]/20 pb-4">
-      <div className="flex items-center gap-2 md:gap-4 min-w-0">
+    <header className="flex-none flex items-center justify-between mb-4 md:mb-6 border-b border-[#5A5A40]/20 pb-4 overflow-x-auto no-scrollbar pt-2">
+      <div className="flex items-center gap-3 md:gap-4 min-w-0 flex-none pr-4">
         <button 
           onClick={() => setIsEditing(true)}
-          className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#5A5A40] flex items-center justify-center text-white shadow-lg flex-none hover:scale-105 active:scale-95 transition-transform group relative"
+          className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-[#5A5A40] flex items-center justify-center text-white shadow-lg flex-none hover:scale-105 active:scale-95 transition-transform group relative touch-manipulation"
           title={t.profileSettings}
           aria-label={t.profileSettings}
         >
@@ -60,14 +60,14 @@ const Header: React.FC<HeaderProps> = ({
           </p>
         </div>
       </div>
-      <div className="flex items-center gap-0.5 md:gap-2 flex-none">
+      <div className="flex items-center gap-2 md:gap-3 flex-none">
         <button 
           onClick={toggleLang}
-          className="h-7 md:h-9 px-1.5 md:px-3 bg-[#5A5A40]/10 hover:bg-[#5A5A40]/20 rounded-full transition-colors text-[#5A5A40] font-sans font-bold text-[9px] md:text-xs flex items-center gap-1"
+          className="h-10 md:h-11 px-3 md:px-4 bg-[#5A5A40]/10 hover:bg-[#5A5A40]/20 rounded-full transition-colors text-[#5A5A40] font-sans font-bold text-xs md:text-sm flex items-center gap-1.5 touch-manipulation"
           title="Change Language"
           aria-label="Change Language"
         >
-          <Languages size={10} className="md:size-[14px]" />
+          <Languages size={14} className="md:size-4" />
           {lang === 'en' ? 'MY' : 'EN'}
         </button>
         <button 
@@ -75,37 +75,37 @@ const Header: React.FC<HeaderProps> = ({
             setInitialEditStep(2);
             setIsEditing(true);
           }}
-          className="w-7 h-7 md:w-9 md:h-9 flex items-center justify-center hover:bg-white rounded-full transition-colors text-[#5A5A40]"
+          className="w-10 h-10 md:w-11 md:h-11 flex items-center justify-center bg-[#5A5A40]/5 hover:bg-white rounded-full transition-colors text-[#5A5A40] touch-manipulation"
           title={t.retakeLevelTest}
           aria-label={t.retakeLevelTest}
         >
-          <Target size={16} className="md:size-5" />
+          <Target size={18} className="md:size-5" />
         </button>
         <button 
           onClick={onShowResources}
-          className="w-7 h-7 md:w-9 md:h-9 flex items-center justify-center hover:bg-white rounded-full transition-colors text-[#5A5A40]"
+          className="w-10 h-10 md:w-11 md:h-11 flex items-center justify-center bg-[#5A5A40]/5 hover:bg-white rounded-full transition-colors text-[#5A5A40] touch-manipulation"
           title={t.usefulResources}
            aria-label={t.usefulResources}
         >
-          <Library size={16} className="md:size-5" />
+          <Library size={18} className="md:size-5" />
         </button>
         <a 
           href="https://drive.google.com/drive/folders/1wlaU3O82loDnk9biiifUQxCtAJlhwZBQ?usp=sharing"
           target="_blank"
           rel="noopener noreferrer"
-          className="w-7 h-7 md:w-9 md:h-9 flex items-center justify-center hover:bg-white rounded-full transition-colors text-[#5A5A40]"
+          className="w-10 h-10 md:w-11 md:h-11 flex items-center justify-center bg-[#5A5A40]/5 hover:bg-white rounded-full transition-colors text-[#5A5A40] touch-manipulation"
           title={t.learningEbooks}
           aria-label={t.learningEbooks}
         >
-          <Book size={16} className="md:size-5" />
+          <Book size={18} className="md:size-5" />
         </a>
         <button 
           onClick={onResetChat}
-          className="w-7 h-7 md:w-9 md:h-9 flex items-center justify-center hover:bg-white rounded-full transition-colors text-[#5A5A40]"
+          className="w-10 h-10 md:w-11 md:h-11 flex items-center justify-center bg-[#5A5A40]/5 hover:bg-white rounded-full transition-colors text-[#5A5A40] touch-manipulation"
           title={t.resetChat}
           aria-label={t.resetChat}
         >
-          <RefreshCw size={16} className="md:size-5" />
+          <RefreshCw size={18} className="md:size-5" />
         </button>
       </div>
     </header>

@@ -106,7 +106,7 @@ const QuizSection: React.FC<QuizSectionProps> = ({
                     <p className="font-sans leading-relaxed">{selectedWordMeaning}</p>
                     <button 
                       onClick={onCloseTooltip}
-                      className="text-[10px] uppercase tracking-widest opacity-60 hover:opacity-100 text-right mt-1"
+                      className="text-xs uppercase tracking-widest opacity-80 hover:opacity-100 text-right mt-2 py-2 px-4 bg-white/10 rounded-lg touch-manipulation font-bold"
                     >
                       Close
                     </button>
@@ -118,16 +118,16 @@ const QuizSection: React.FC<QuizSectionProps> = ({
           )}
         </AnimatePresence>
 
-        <div className="grid grid-cols-1 gap-3">
+        <div className="grid grid-cols-1 gap-4 md:gap-5">
           {currentQuestion.options.map((option, idx) => (
             <button
               key={idx}
               disabled={wrongAnswersForCurrentQuestion.includes(idx) || quizFeedback.loading}
               onClick={() => onAnswer(idx)}
-              className={`w-full text-left p-4 rounded-2xl border-2 transition-all font-sans ${
+              className={`w-full text-left p-4 md:p-5 min-h-[56px] rounded-2xl border-2 transition-all font-sans touch-manipulation ${
                 wrongAnswersForCurrentQuestion.includes(idx)
                   ? 'border-red-200 bg-red-50 text-red-400 cursor-not-allowed opacity-60'
-                  : 'border-[#5A5A40]/10 hover:border-[#5A5A40] hover:bg-white'
+                  : 'border-[#5A5A40]/10 hover:border-[#5A5A40] hover:bg-white active:bg-[#5A5A40]/5'
               }`}
             >
               {option}
@@ -160,12 +160,12 @@ const QuizSection: React.FC<QuizSectionProps> = ({
         </AnimatePresence>
       </div>
 
-      <div className="flex flex-col items-center gap-4 mt-6">
+      <div className="flex flex-col items-center gap-4 mt-8">
         <button 
           onClick={onExit}
-          className="text-red-500 opacity-60 hover:opacity-100 transition-opacity font-sans text-sm font-bold flex items-center gap-2"
+          className="text-red-500 opacity-60 hover:opacity-100 transition-opacity font-sans text-base font-bold flex items-center gap-2 px-6 py-3 rounded-full hover:bg-red-50 touch-manipulation"
         >
-          <X size={16} />
+          <X size={18} />
           {t.exitTest}
         </button>
       </div>
