@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Timer, Loader2, AlertCircle, X } from 'lucide-react';
+import { Timer, Loader2, AlertCircle, X, CheckCircle2 } from 'lucide-react';
 import { QuizQuestion } from '../quizData';
 
 interface QuizSectionProps {
@@ -119,20 +119,41 @@ const QuizSection: React.FC<QuizSectionProps> = ({
         </AnimatePresence>
 
         <div className="grid grid-cols-1 gap-4 md:gap-5">
-          {currentQuestion.options.map((option, idx) => (
-            <button
-              key={idx}
-              disabled={wrongAnswersForCurrentQuestion.includes(idx) || quizFeedback.loading}
-              onClick={() => onAnswer(idx)}
-              className={`w-full text-left p-4 md:p-5 min-h-[56px] rounded-2xl border-2 transition-all font-sans touch-manipulation ${
-                wrongAnswersForCurrentQuestion.includes(idx)
-                  ? 'border-red-200 bg-red-50 text-red-400 cursor-not-allowed opacity-60'
-                  : 'border-[#5A5A40]/10 hover:border-[#5A5A40] hover:bg-white active:bg-[#5A5A40]/5'
-              }`}
-            >
-              {option}
-            </button>
-          ))}
+          {currentQuestion.options.map((option, idx) => {
+            const isCorrect = idx === currentQuestion.correctIndex;
+            const isWronglySelected = wrongAnswersForCurrentQuestion.includes(idx);
+            
+            // If feedback is showing a mistake, highlight the correct one in green
+            const shouldHighlightCorrect = quizFeedback.isWrong && isCorrect;
+
+            return (
+              <button
+                key={idx}
+                disabled={(wrongAnswersForCurrentQuestion.includes(idx) && !shouldHighlightCorrect) || quizFeedback.loading}
+                onClick={() => onAnswer(idx)}
+                className={`w-full text-left p-4 md:p-5 min-h-[56px] rounded-2xl border-2 transition-all font-sans touch-manipulation relative overflow-hidden ${
+                  isWronglySelected
+                    ? 'border-red-200 bg-red-50 text-red-400 cursor-not-allowed opacity-60'
+                    : shouldHighlightCorrect
+                      ? 'border-green-500 bg-green-50 text-green-700 shadow-[0_0_15px_rgba(34,197,94,0.2)]'
+                      : 'border-[#5A5A40]/10 hover:border-[#5A5A40] hover:bg-white active:bg-[#5A5A40]/5'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span>{option}</span>
+                  {shouldHighlightCorrect && (
+                    <motion.span 
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="bg-green-500 text-white p-1 rounded-full flex-none ml-2"
+                    >
+                      <CheckCircle2 size={14} />
+                    </motion.span>
+                  )}
+                </div>
+              </button>
+            );
+          })}
         </div>
 
         <AnimatePresence>

@@ -11,7 +11,8 @@ import {
   Settings, 
   Send, 
   User, 
-  ChevronRight, 
+  ChevronRight,
+  ChevronLeft, 
   Loader2,
   Languages,
   Target,
@@ -1179,23 +1180,34 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
       // Wrong!
       if (wrongAnswersForCurrentQuestion.includes(index)) return;
 
-      setQuizFeedback(prev => ({ ...prev, loading: true, isWrong: true }));
+      const currentQ = activeQuestions[quizStep];
+      // Show static explanation and highlight correct answer IMMEDIATELY
+      setQuizFeedback({ 
+        isWrong: true, 
+        explanation: currentQ.explanation, // Use static explanation first for speed
+        loading: true 
+      });
       setWrongAnswersForCurrentQuestion(prev => [...prev, index]);
 
       try {
-        const explanation = await getWrongAnswerExplanation(
-          activeQuestions[quizStep].question,
-          activeQuestions[quizStep].options[index],
-          activeQuestions[quizStep].options,
+        const aiExplanation = await getWrongAnswerExplanation(
+          currentQ.question,
+          currentQ.options[index],
+          currentQ.options,
           formData as UserProfile
         );
-        setQuizFeedback({ isWrong: true, explanation, loading: false });
+        // Update with AI explanation for more context, but keep it structured
+        setQuizFeedback({ 
+          isWrong: true, 
+          explanation: `${currentQ.explanation}\n\nAI Insight: ${aiExplanation}`, 
+          loading: false 
+        });
       } catch (err: any) {
         console.error("Failed to get explanation:", err);
         if (err.message?.includes('429') || err.message?.toLowerCase().includes('quota')) {
           setQuotaExceeded(true);
         }
-        setQuizFeedback({ isWrong: true, explanation: "That's not quite right. Try another option!", loading: false });
+        setQuizFeedback({ isWrong: true, explanation: currentQ.explanation, loading: false });
       }
     }
   };
@@ -1584,6 +1596,13 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                       >
                         {t.skip}
                       </button>
+                      <button 
+                        onClick={prevStep}
+                        className="text-[#5A5A40] font-sans font-bold text-sm opacity-40 hover:opacity-100 transition-opacity py-2 flex items-center justify-center gap-1"
+                      >
+                        <ChevronLeft size={16} />
+                        {t.back}
+                      </button>
                     </div>
                   </div>
                 ) : (
@@ -1853,48 +1872,6 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                     </button>
                   </div>
                 )}
-
-                <AnimatePresence>
-                  {showResetConfirm && (
-                    <motion.div 
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
-                    >
-                      <motion.div 
-                        initial={{ scale: 0.95, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0.95, opacity: 0 }}
-                        className="bg-white rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl space-y-6"
-                      >
-                        <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto">
-                          <AlertCircle size={32} />
-                        </div>
-                        <div className="text-center space-y-2">
-                          <h3 className="text-2xl font-bold text-gray-900">{t.resetWarningTitle}</h3>
-                          <p className="text-gray-600 text-sm leading-relaxed">
-                            {t.resetWarningDesc}
-                          </p>
-                        </div>
-                        <div className="flex flex-col gap-3 pt-4">
-                          <button 
-                            onClick={onReset}
-                            className="w-full bg-red-600 text-white py-4 rounded-full font-sans font-bold hover:bg-red-700 transition-colors"
-                          >
-                            {t.confirmResetProfile}
-                          </button>
-                          <button 
-                            onClick={() => setShowResetConfirm(false)}
-                            className="w-full bg-gray-100 text-gray-700 py-4 rounded-full font-sans font-bold hover:bg-gray-200 transition-colors"
-                          >
-                            {t.keepProfile}
-                          </button>
-                        </div>
-                      </motion.div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
               </motion.div>
             )}
           </>
@@ -2080,6 +2057,94 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                       <div className="absolute bottom-10 right-10 w-20 h-20 border-b-4 border-r-4 border-[#5A5A40]/20" />
                     </div>
                   </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {showExitConfirm && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm shadow-2xl"
+            >
+              <motion.div 
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                className="bg-white rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl space-y-6"
+              >
+                <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto">
+                  <AlertCircle size={32} />
+                </div>
+                <div className="text-center space-y-2">
+                  <h3 className="text-2xl font-bold text-gray-900">{t.exitTestConfirmTitle || "Exit Test?"}</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">
+                    {t.exitTestConfirmDesc || "Your current progress will be lost. Are you sure you want to quit the exam?"}
+                  </p>
+                </div>
+                <div className="flex flex-col gap-3 pt-4">
+                  <button 
+                    onClick={() => {
+                      setShowExitConfirm(false);
+                      setShowQuiz(false);
+                      restartQuiz();
+                    }}
+                    className="w-full bg-red-600 text-white py-4 rounded-full font-sans font-bold hover:bg-red-700 transition-colors shadow-lg"
+                  >
+                    {t.confirmExit || "Yes, Exit Test"}
+                  </button>
+                  <button 
+                    onClick={() => setShowExitConfirm(false)}
+                    className="w-full bg-gray-100 text-gray-700 py-4 rounded-full font-sans font-bold hover:bg-gray-200 transition-colors"
+                  >
+                    {t.resumeTest || "No, Continue Test"}
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {showResetConfirm && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+            >
+              <motion.div 
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                className="bg-white rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl space-y-6"
+              >
+                <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto">
+                  <AlertCircle size={32} />
+                </div>
+                <div className="text-center space-y-2">
+                  <h3 className="text-2xl font-bold text-gray-900">{t.resetWarningTitle}</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">
+                    {t.resetWarningDesc}
+                  </p>
+                </div>
+                <div className="flex flex-col gap-3 pt-4">
+                  <button 
+                    onClick={onReset}
+                    className="w-full bg-red-600 text-white py-4 rounded-full font-sans font-bold hover:bg-red-700 transition-colors shadow-lg"
+                  >
+                    {t.confirmResetProfile}
+                  </button>
+                  <button 
+                    onClick={() => setShowResetConfirm(false)}
+                    className="w-full bg-gray-100 text-gray-700 py-4 rounded-full font-sans font-bold hover:bg-gray-200 transition-colors"
+                  >
+                    {t.keepProfile}
+                  </button>
                 </div>
               </motion.div>
             </motion.div>
