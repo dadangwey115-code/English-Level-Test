@@ -175,7 +175,11 @@ export const translations = {
     voaDesc: "News-based lessons with slowed-down audio for better listening.",
     cambridgeDesc: "Official practice activities and exam preparation for all levels.",
     learningEbooks: "Learning eBooks (PDF)",
-    ebooksDesc: "Download free English learning books and resources."
+    ebooksDesc: "Download free English learning books and resources.",
+    efset: "EF SET Certificate",
+    efsetBannerTitle: "Get a Free English Certificate!",
+    efsetBannerDesc: "Want a globally standardized English certificate? Take the official 50-minute EF SET (EF Standard English Test) online to get your free certified level certificate.",
+    efsetButton: "Go to EF SET Exam"
   },
   my: {
     appName: "မင်္ဂလာ အင်္ဂလိပ်စာ နည်းပြ",
@@ -351,6 +355,10 @@ export const translations = {
     voaDesc: "နားထောင်မှု စွမ်းရည်အတွက် သတင်းများကို အခြေခံ၍ ဖြည်းဖြည်းချင်း ဖတ်ပြသော သင်ခန်းစာများ ဖြစ်ပါသည်။",
     cambridgeDesc: "Cambridge အဆင့်အတန်းမီ လေ့ကျင့်ခန်းများနှင့် စာမေးပွဲ ပြင်ဆင်မှုများ ဖြစ်ပါသည်။",
     learningEbooks: "လေ့လာမှုဆိုင်ရာ E-books (PDF)",
-    ebooksDesc: "အခမဲ့ အင်္ဂလိပ်စာ လေ့လာမှု စာအုပ်များနှင့် အရင်းအမြစ်များကို ဒေါင်းလုဒ်လုပ်ပါ။"
+    ebooksDesc: "အခမဲ့ အင်္ဂလိပ်စာ လေ့လာမှု စာအုပ်များနှင့် အရင်းအမြစ်များကို ဒေါင်းလုဒ်လုပ်ပါ။",
+    efset: "EF SET အောင်လက်မှတ်",
+    efsetBannerTitle: "တရားဝင် အင်္ဂလိပ်စာ အောင်လက်မှတ် အခမဲ့ ရယူပါ!",
+    efsetBannerDesc: "ကမ္ဘာအနှံ့ အသိအမှတ်ပြုထားသော အင်္ဂလိပ်စာ အရည်အချင်းစစ် အောင်လက်မှတ်ကို အခမဲ့ ရယူလိုပါသလား? မိနစ် ၅၀ ကြာမြင့်မည့် တရားဝင် EF SET (EF Standard English Test) ကို အွန်လိုင်းတွင် ဖြေဆိုပြီး အခမဲ့ Level Certificate ကို ရယူနိုင်ပါသည်။",
+    efsetButton: "EF SET စာမေးပွဲ ဖြေဆိုရန်"
   }
 };

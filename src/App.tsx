@@ -35,7 +35,8 @@ import {
   ExternalLink,
   Library,
   Book,
-  ShieldCheck
+  ShieldCheck,
+  Award
 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -1522,6 +1523,16 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                       {t.learningEbooks}
                     </a>
                     <a 
+                      href="https://www.efset.org/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-[#5A5A40] opacity-90 hover:opacity-100 transition-opacity font-sans text-sm font-bold bg-[#5A5A40]/10 px-3 py-1 flex-nowrap rounded-full hover:bg-[#5A5A40]/20 transition-all"
+                      title="Take official EF SET Exam for standard certificate"
+                    >
+                      <Award size={16} className="text-[#5A5A40]" />
+                      {t.efset}
+                    </a>
+                    <a 
                       href="https://komoe.mindset-it.online/"
                       target="_blank"
                       rel="noopener noreferrer"
@@ -1589,6 +1600,28 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                         <p className="text-xs text-amber-800 leading-relaxed">
                           {t.timerSuggestion}
                         </p>
+                      </div>
+                      <div className="max-w-sm mx-auto p-4 bg-[#5A5A40]/5 border border-[#5A5A40]/15 rounded-3xl text-left flex flex-col gap-3 mt-4 shadow-sm">
+                        <div className="flex gap-3">
+                          <Award size={20} className="text-[#5A5A40] flex-none mt-0.5" />
+                          <div className="space-y-1">
+                            <h4 className="text-sm font-bold text-gray-900 leading-tight">
+                              {t.efsetBannerTitle}
+                            </h4>
+                            <p className="text-xs text-gray-600 leading-relaxed">
+                              {t.efsetBannerDesc}
+                            </p>
+                          </div>
+                        </div>
+                        <a 
+                          href="https://www.efset.org/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full bg-[#5A5A40] text-white py-2.5 px-4 rounded-xl font-sans font-bold text-xs hover:bg-[#4a4a34] transition-all flex items-center justify-center gap-1.5 shadow-sm mt-1"
+                        >
+                          {t.efsetButton}
+                          <ExternalLink size={12} />
+                        </a>
                       </div>
                       <button 
                         onClick={() => setShowManualLevel(true)}
@@ -2144,6 +2177,137 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                     className="w-full bg-gray-100 text-gray-700 py-4 rounded-full font-sans font-bold hover:bg-gray-200 transition-colors"
                   >
                     {t.keepProfile}
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {showReview && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm no-print"
+            >
+              <motion.div 
+                initial={{ scale: 0.95, opacity: 0, y: 15 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.95, opacity: 0, y: 15 }}
+                className="bg-[#fafaf6] rounded-[32px] border border-[#5A5A40]/10 shadow-2xl w-full max-w-4xl max-h-[85vh] flex flex-col overflow-hidden text-left"
+              >
+                {/* Header */}
+                <div className="p-6 border-b border-[#5A5A40]/10 bg-white flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-[#5A5A40]/10 text-[#5A5A40] flex items-center justify-center">
+                      <BookOpen size={20} />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-900">{t.reviewAnswers}</h3>
+                      <p className="text-xs text-gray-500 font-sans mt-0.5">
+                        {t.score || "Score"}: <span className="font-bold text-[#5A5A40]">{quizScore} / {activeQuestions.length}</span>
+                      </p>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => setShowReview(false)}
+                    className="p-2 text-gray-400 hover:text-gray-600 hover:bg-[#5A5A40]/5 rounded-full transition-all"
+                  >
+                    <X size={24} />
+                  </button>
+                </div>
+
+                {/* Question List */}
+                <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-6">
+                  {activeQuestions.map((q, idx) => {
+                    const userChosenIdx = userAnswers[idx];
+                    const isPerfect = userChosenIdx === q.correctIndex;
+                    
+                    return (
+                      <div 
+                        key={q.id || idx} 
+                        className="bg-white rounded-2xl border-2 border-[#5A5A40]/10 p-5 md:p-6 space-y-4 shadow-sm"
+                      >
+                        {/* Meta Tags */}
+                        <div className="flex flex-wrap gap-2 items-center">
+                          <span className="text-[10px] uppercase font-sans font-extrabold tracking-wider bg-[#5A5A40]/10 text-[#5A5A40] px-2.5 py-1 rounded-full">
+                            Q{idx + 1}
+                          </span>
+                          <span className="text-[10px] uppercase font-sans font-extrabold tracking-wider bg-amber-50 text-amber-700 px-2.5 py-1 rounded-full border border-amber-100">
+                            {q.difficulty}
+                          </span>
+                          <span className="text-[10px] uppercase font-sans font-extrabold tracking-wider bg-[#5A5A40]/5 text-gray-600 px-2.5 py-1 rounded-full border border-gray-100">
+                            {q.skill}
+                          </span>
+                          <span className={`text-[10px] uppercase font-sans font-extrabold tracking-wider px-2.5 py-1 rounded-full border ml-auto ${
+                            isPerfect 
+                              ? "bg-green-50 text-green-700 border-green-100" 
+                              : "bg-red-50 text-red-700 border-red-100"
+                          }`}>
+                            {isPerfect ? "Correct" : "Incorrect"}
+                          </span>
+                        </div>
+
+                        {/* Question Text */}
+                        <h4 className="text-base md:text-lg font-bold text-gray-900 leading-snug">
+                          {q.question}
+                        </h4>
+
+                        {/* Options */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {q.options.map((option, optIdx) => {
+                            const isCorrectOpt = optIdx === q.correctIndex;
+                            const isUserSelection = optIdx === userChosenIdx;
+
+                            let baseStyle = "border-gray-200 bg-gray-50/50 text-gray-700";
+                            let iconEl = null;
+
+                            if (isCorrectOpt) {
+                              baseStyle = "border-green-500 bg-green-50 text-green-700 font-medium";
+                              iconEl = <CheckCircle2 size={16} className="text-green-600 shrink-0" />;
+                            } else if (isUserSelection && !isPerfect) {
+                              baseStyle = "border-red-300 bg-red-50 text-red-700 font-medium";
+                              iconEl = <X size={16} className="text-red-500 shrink-0" />;
+                            }
+
+                            return (
+                              <div 
+                                key={optIdx} 
+                                className={`p-4 rounded-xl border-2 flex items-center justify-between text-sm transition-all ${baseStyle}`}
+                              >
+                                <span>{option}</span>
+                                {iconEl}
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        {/* Explanation block */}
+                        {q.explanation && (
+                          <div className="p-4 bg-amber-50/60 rounded-xl border border-amber-200/50 space-y-1">
+                            <div className="flex items-center gap-1.5 text-amber-800 font-bold text-xs">
+                              <HelpCircle size={14} />
+                              Explanation
+                            </div>
+                            <p className="text-xs text-gray-700 leading-relaxed font-sans">
+                              {q.explanation}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Footer */}
+                <div className="p-6 border-t border-[#5A5A40]/10 bg-white flex justify-end">
+                  <button 
+                    onClick={() => setShowReview(false)}
+                    className="px-6 py-3 bg-[#5A5A40] text-white rounded-full font-sans font-bold hover:bg-[#4a4a34] transition-colors text-sm shadow-md"
+                  >
+                    Done
                   </button>
                 </div>
               </motion.div>
