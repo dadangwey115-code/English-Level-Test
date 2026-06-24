@@ -35,7 +35,7 @@ import {
   ExternalLink,
   Library,
   Book,
-  ShieldCheck,
+  PenTool,
   Award
 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
@@ -50,7 +50,6 @@ import Header from './components/Header';
 import Loader from './components/Loader';
 
 // Lazy Components
-const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
 const QuizSection = lazy(() => import('./components/QuizSection'));
 const ResultSection = lazy(() => import('./components/ResultSection'));
 
@@ -69,7 +68,6 @@ export default function App() {
   const [showPurpose, setShowPurpose] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
   const [showResources, setShowResources] = useState(false);
-  const [showAdmin, setShowAdmin] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const t = translations[lang];
@@ -285,7 +283,6 @@ Status: Learning from Web App`;
             setQuotaExceeded={setQuotaExceeded}
             initialStep={initialEditStep}
             onShowResources={() => setShowResources(true)}
-            onShowAdmin={() => setShowAdmin(true)}
           />
         ) : (
           <div key="chat" className="max-w-5xl mx-auto h-[100dvh] flex flex-col p-4 md:p-8 overflow-hidden">
@@ -709,18 +706,6 @@ Status: Learning from Web App`;
         )}
       </AnimatePresence>
 
-      <AnimatePresence>
-        {showAdmin && (
-          <Suspense fallback={<div className="fixed inset-0 z-[100] bg-white flex items-center justify-center"><Loader /></div>}>
-            <AdminDashboard 
-              onClose={() => setShowAdmin(false)} 
-              lang={lang} 
-              translations={t} 
-            />
-          </Suspense>
-        )}
-      </AnimatePresence>
-
       {/* Global Floating AI Assistant Icons */}
       <div className="fixed bottom-6 right-6 z-[100] no-print flex flex-col gap-4">
         {/* Assistant 1: Learning Assistant */}
@@ -816,7 +801,7 @@ Status: Learning from Web App`;
   );
 }
 
-function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggleLang, setQuotaExceeded, initialStep, onShowResources, onShowAdmin }: { 
+function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggleLang, setQuotaExceeded, initialStep, onShowResources }: { 
   onSubmit: (profile: UserProfile) => void, 
   initialData?: UserProfile,
   onCancel?: () => void,
@@ -825,7 +810,6 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
   toggleLang: () => void,
   setQuotaExceeded: (val: boolean) => void,
   onShowResources: () => void,
-  onShowAdmin: () => void,
   key?: string,
   initialStep?: number
 }) {
@@ -1485,13 +1469,15 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                 />
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8">
                   <div className="flex flex-wrap gap-4 order-2 sm:order-1">
-                    <button 
-                      onClick={onShowAdmin}
+                    <a 
+                      href="https://writing.komoe.org/"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="flex items-center gap-2 bg-[#5A5A40]/10 text-[#5A5A40] px-4 py-2 rounded-full transition-all hover:bg-[#5A5A40]/20 font-sans font-bold text-xs"
                     >
-                      <ShieldCheck size={14} />
-                      Admin
-                    </button>
+                      <PenTool size={14} />
+                      {t.writingTest}
+                    </a>
                     <button 
                       onClick={() => (window as any).showGlobalPurpose?.()} 
                       className="flex items-center gap-2 bg-[#5A5A40] text-white px-4 py-2 rounded-full transition-all hover:bg-[#4a4a34] shadow-md font-sans font-bold text-xs"
@@ -1533,7 +1519,7 @@ function AssessmentForm({ onSubmit, initialData, onCancel, onReset, lang, toggle
                       {t.efset}
                     </a>
                     <a 
-                      href="https://komoe.mindset-it.online/"
+                      href="https://komoe.org/"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 text-[#5A5A40] opacity-90 hover:opacity-100 transition-opacity font-sans text-sm font-bold"
